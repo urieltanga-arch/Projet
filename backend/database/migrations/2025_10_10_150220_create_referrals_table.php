@@ -9,10 +9,11 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+
+        public function up()
     {
         Schema::create('referrals', function (Blueprint $table) {
-            $table->id('referral_id');
+            $table->id(); // Clé primaire standard 'id'
             // parrain (referrer) and filleul (referred)
             $table->unsignedBigInteger('id_parrain');
             $table->unsignedBigInteger('id_filleul');

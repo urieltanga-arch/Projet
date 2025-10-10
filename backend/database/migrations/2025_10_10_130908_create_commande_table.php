@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('orders', function (Blueprint $table) {
+        Schema::create('commande', function (Blueprint $table) {
             $table->id();
             // utilisateur qui a passé la commande
             $table->unsignedBigInteger('user_id');
             // montant total
             $table->decimal('montant_total', 10, 2)->default(0);
             // statut de la commande
-            $table->enum('status', ['en_attente', 'en_cours', 'terminee','cancelled'])->default('en_attente');
+            $table->enum('status', ['en_attente', 'en_cours', 'terminee','annulee'])->default('en_attente');
             // adresse de livraison ou informations de retrait
             $table->text('addresse_commande')->nullable();
             // méthode de paiement
@@ -33,7 +33,7 @@ return new class extends Migration
             $table->index('user_id');
             $table->index('referral_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('referral_id')->references('referral_id')->on('referrals')->onDelete('set null');
+            $table->foreign('referral_id')->references('id')->on('referrals')->onDelete('set null');
         });
     }
 
@@ -42,6 +42,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('orders');
+        Schema::dropIfExists('commande');
     }
 };
