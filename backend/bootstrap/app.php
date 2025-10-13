@@ -3,26 +3,6 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use Closure;
-use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-class RoleMiddleware
-{
-    /**
-     * Handle an incoming request.
-     */
-    public function handle(Request $request, Closure $next, string $role): Response
-    {
-        if (!$request->user() || $request->user()->role !== $role) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Accès non autorisé. Rôle requis : ' . $role,
-            ], 403);
-        }
-
-        return $next($request);
-    }
-}
 
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -33,7 +13,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+       'role' => \App\Http\Middleware\RoleMiddleware::class,
+   ]);
         
     })
     ->withExceptions(function (Exceptions $exceptions): void {
