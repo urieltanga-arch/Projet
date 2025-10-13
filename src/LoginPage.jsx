@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
-import { HiPhone } from 'react-icons/hi'; // AJOUTEZ CETTE LIGNE
+import { HiPhone } from 'react-icons/hi'; 
 
 
 export default function LoginPage() {
@@ -8,7 +8,7 @@ export default function LoginPage() {
 // ÉTATS GÉNÉRAUX
 // ========================================
 const [activeTab, setActiveTab] = useState('connexion');
-const [activeForm, setActiveForm] = useState('login'); // NOUVEAU : 'login', 'register', 'forgot'
+const [activeForm, setActiveForm] = useState('login'); //  'login', 'register', 'forgot'
 const [isLoading, setIsLoading] = useState(false);
 
 // ÉTATS POUR LA CONNEXION
@@ -32,7 +32,7 @@ const [registerCountryCode, setRegisterCountryCode] = useState('+237');
 const [forgotEmail, setForgotEmail] = useState('');
 
 //ETATS POUR LES COOKIES
-const [acceptCookies, setAcceptCookies] = useState(false); // NOUVEAU
+const [acceptCookies, setAcceptCookies] = useState(false); 
 
  // ========================================
 // FONCTION DE CONNEXION
@@ -500,7 +500,7 @@ const handleTabChange = (tab) => {
           className="w-full px-4 py-4 rounded-xl bg-amber-50 border-none text-gray-700 placeholder-gray-400 focus:outline-none focus:ring focus:ring-amber-400/50 disabled:opacity-50"
         />
       </div>
-      {/* ===== GARDEZ CETTE VERSION (avec select code pays) ===== */}
+      {/* =====  fonction  Select code pays ===== */}
 <div>
   <label className="block text-black font-semibold mb-2">
     Numéro de téléphone
@@ -621,8 +621,8 @@ const handleTabChange = (tab) => {
   <label className="flex items-start gap-3 cursor-pointer">
     <input
       type="checkbox"
-      checked={acceptCookies}  // CHANGÉ
-      onChange={(e) => setAcceptCookies(e.target.checked)}  // CHANGÉ
+      checked={acceptCookies}  
+      onChange={(e) => setAcceptCookies(e.target.checked)}  
       disabled={isLoading}
       className="w-5 h-5 mt-0.5 rounded border-2 border-gray-400 text-amber-500 focus:ring focus:ring-amber-400/50 disabled:opacity-50"
     />
