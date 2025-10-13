@@ -20,7 +20,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
+        'location',
+        'role',
+        'loyalty_points',
+        'referral_code',
+        'referred_by',
+        'is_active',
     ];
 
     /**
@@ -38,11 +45,63 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+   protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'is_active' => 'boolean',
+        'loyalty_points' => 'integer',
+    ];
+
+    // Générer automatiquement un code de parrainage
+    protected static function boot()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (empty($user->referral_code)) {
+                $user->referral_code = strtoupper(Str::random(8));
+            }
+        });
+    }
+
+        // Relations
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'referred_by');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'referred_by');
+    }
+
+    public function referralRecords()
+    {
+        return $this->hasMany(Referral::class, 'referrer_id');
+    }
+
+    // Méthodes utilitaires
+    public function addLoyaltyPoints(int $points)
+    {
+        $this->increment('loyalty_points', $points);
+    }
+
+    public function useLoyaltyPoints(int $points)
+    {
+        if ($this->loyalty_points >= $points) {
+            $this->decrement('loyalty_points', $points);
+            return true;
+        }
+        return false;
+    }
+
+    public function canUseLoyaltyPoints(int $points): bool
+    {
+        return $this->loyalty_points >= $points;
     }
 }
