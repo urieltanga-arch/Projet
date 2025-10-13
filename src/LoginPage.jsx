@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
+import { HiPhone } from 'react-icons/hi'; // AJOUTEZ CETTE LIGNE
 
 
 export default function LoginPage() {
@@ -24,11 +25,14 @@ const [registerConfirmPassword, setRegisterConfirmPassword] = useState('');
 const [showRegisterPassword, setShowRegisterPassword] = useState(false);
 const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 const [acceptTerms, setAcceptTerms] = useState(false);
-const [registerPhone, setRegisterPhone] = useState('');
-
+const [registerPhone, setRegisterPhone] = useState(''); 
+const [registerCountryCode, setRegisterCountryCode] = useState('+237');
 
 // ÉTATS POUR MOT DE PASSE OUBLIÉ (NOUVEAU)
 const [forgotEmail, setForgotEmail] = useState('');
+
+//ETATS POUR LES COOKIES
+const [acceptCookies, setAcceptCookies] = useState(false); // NOUVEAU
 
  // ========================================
 // FONCTION DE CONNEXION
@@ -70,6 +74,50 @@ const handleLogin = async () => {
     setIsLoading(false);
   }
 };
+// ========================================
+// FONCTION DE FORMATAGE DU TÉLÉPHONE
+// ========================================
+const formatPhoneNumber = (value) => {
+  // Enlever tout ce qui n'est pas un chiffre ou +
+  let cleaned = value.replace(/[^\d+]/g, '');
+  
+  // Si commence par 237 (Cameroun), ajouter le +
+  if (cleaned.startsWith('237')) {
+    cleaned = '+' + cleaned;
+  }
+  
+  // Si commence par 0, enlever le 0 et ajouter +237
+  if (cleaned.startsWith('0')) {
+    cleaned = '+237' + cleaned.slice(1);
+  }
+  
+  // Formater : +237 6 XX XX XX XX
+  if (cleaned.startsWith('+237')) {
+    const numbers = cleaned.slice(4); // Enlever +237
+    let formatted = '+237';
+    
+    if (numbers.length > 0) {
+      formatted += ' ' + numbers.slice(0, 1); // Premier chiffre
+    }
+    if (numbers.length > 1) {
+      formatted += ' ' + numbers.slice(1, 3); // 2 chiffres
+    }
+    if (numbers.length > 3) {
+      formatted += ' ' + numbers.slice(3, 5); // 2 chiffres
+    }
+    if (numbers.length > 5) {
+      formatted += ' ' + numbers.slice(5, 7); // 2 chiffres
+    }
+    if (numbers.length > 7) {
+      formatted += ' ' + numbers.slice(7, 9); // 2 derniers chiffres
+    }
+    
+    return formatted;
+  }
+  
+  // Sinon, retourner tel quel (pour autres pays)
+  return cleaned;
+};
 
 // ========================================
 // FONCTION D'INSCRIPTION
@@ -99,11 +147,23 @@ const handleRegister = async () => {
     return;
   }
 
-  // Validation du numéro de telephone
-  if (!registerPhone) {
+// Validation du téléphone
+if (!registerPhone) {
   alert('Veuillez entrer votre numéro de téléphone');
   return;
-} 
+}
+
+const cleanPhone = registerPhone.replace(/[^\d]/g, '');
+
+if (cleanPhone.length < 8) {
+  alert('Numéro de téléphone trop court');
+  return;
+}
+
+// Combiner code pays + numéro pour l'enregistrement
+const fullPhone = registerCountryCode + cleanPhone;
+console.log('Téléphone complet:', fullPhone);
+  
   // Validation du mot de passe
   if (!registerPassword) {
     alert('Veuillez entrer un mot de passe');
@@ -126,6 +186,12 @@ const handleRegister = async () => {
     alert('Veuillez accepter les conditions d\'utilisation');
     return;
   }
+
+  // Vérification des cookies (AJOUTEZ CECI)
+if (!acceptCookies) {
+  alert('Veuillez accepter l\'utilisation des cookies');
+  return;
+}
   
   setIsLoading(true);
   
@@ -136,6 +202,7 @@ const handleRegister = async () => {
     console.log('=== INSCRIPTION RÉUSSIE ===');
     console.log('Nom:', registerName);
     console.log('Email:', registerEmail);
+    console.log('Téléphone:', registerPhone); // Avec majuscule P et deux-points
     console.log('Password:', registerPassword);
     
     alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
@@ -147,9 +214,11 @@ const handleRegister = async () => {
     // Réinitialiser les champs
     setRegisterName('');
     setRegisterEmail('');
+    setRegisterPhone('');
     setRegisterPassword('');
     setRegisterConfirmPassword('');
     setAcceptTerms(false);
+    setAcceptCookies(false);
     
   } catch (error) {
     console.error('Erreur:', error);
@@ -431,22 +500,52 @@ const handleTabChange = (tab) => {
           className="w-full px-4 py-4 rounded-xl bg-amber-50 border-none text-gray-700 placeholder-gray-400 focus:outline-none focus:ring focus:ring-amber-400/50 disabled:opacity-50"
         />
       </div>
-      {/* Numéro de téléphone */}
+      {/* ===== GARDEZ CETTE VERSION (avec select code pays) ===== */}
 <div>
   <label className="block text-black font-semibold mb-2">
     Numéro de téléphone
   </label>
-  <input
-    type="tel"
-    value={registerPhone}
-    onChange={(e) => setRegisterPhone(e.target.value)}
-    placeholder="+237 6 70 46 88 05"
-    disabled={isLoading}
-    className="w-full px-4 py-4 rounded-xl bg-amber-50 border-none text-gray-700 placeholder-gray-400 
-               focus:outline-none focus:ring focus:ring-amber-400/50 disabled:opacity-50"
-  />
+  <div className="flex gap-2">
+    {/* Select code pays */}
+    <select
+      value={registerCountryCode}
+      onChange={(e) => setRegisterCountryCode(e.target.value)}
+      disabled={isLoading}
+      className="w-32 px-3 py-4 rounded-xl bg-amber-50 border-none text-gray-700 focus:outline-none focus:ring focus:ring-amber-400/50 disabled:opacity-50"
+    >
+      <option value="+237">🇨🇲 +237</option>
+      <option value="+33">🇫🇷 +33</option>
+      <option value="+1">🇺🇸 +1</option>
+      <option value="+44">🇬🇧 +44</option>
+      <option value="+225">🇨🇮 +225</option>
+      <option value="+221">🇸🇳 +221</option>
+      <option value="+243">🇨🇩 +243</option>
+    </select>
+    
+    {/* Input numéro */}
+    <div className="flex-1 relative">
+      <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+        <HiPhone className="w-5 h-5" />
+      </div>
+      <input
+        type="tel"
+        value={registerPhone}
+        onChange={(e) => {
+          const cleaned = e.target.value.replace(/[^\d]/g, '');
+          setRegisterPhone(cleaned);
+        }}
+        placeholder="6 XX XX XX XX"
+        disabled={isLoading}
+        maxLength={15}
+        className="w-full pl-12 pr-4 py-4 rounded-xl bg-amber-50 border-none text-gray-700 placeholder-gray-400 focus:outline-none focus:ring focus:ring-amber-400/50 disabled:opacity-50"
+      />
+    </div>
+  </div>
+  <p className="mt-1 text-xs text-gray-500">
+    Sélectionnez votre code pays et entrez votre numéro
+  </p>
 </div>
-
+    
 
       {/* Mot de passe */}
       <div>
@@ -518,27 +617,27 @@ const handleTabChange = (tab) => {
       </div>
 
       {/* Accepter les cookies */}
-      <div>
-        <label className="flex items-start gap-3 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={acceptTerms}
-            onChange={(e) => setAcceptTerms(e.target.checked)}
-            disabled={isLoading}
-            className="w-5 h-5 mt-0.5 rounded border-2 border-gray-400 text-amber-500 focus:ring focus:ring-amber-400/50 disabled:opacity-50"
-          />
-          <span className="text-sm text-gray-700">
-            J'accepte les{' '}
-            <button className="text-amber-500 hover:text-amber-600 font-medium">
-              Utilisations des cookies
-            </button>
-            {' '}et la{' '}
-            <button className="text-amber-500 hover:text-amber-600 font-medium">
-              politique de confidentialité
-            </button>
-          </span>
-        </label>
-      </div>
+<div>
+  <label className="flex items-start gap-3 cursor-pointer">
+    <input
+      type="checkbox"
+      checked={acceptCookies}  // CHANGÉ
+      onChange={(e) => setAcceptCookies(e.target.checked)}  // CHANGÉ
+      disabled={isLoading}
+      className="w-5 h-5 mt-0.5 rounded border-2 border-gray-400 text-amber-500 focus:ring focus:ring-amber-400/50 disabled:opacity-50"
+    />
+    <span className="text-sm text-gray-700">
+      J'accepte les{' '}
+      <button className="text-amber-500 hover:text-amber-600 font-medium">
+        Utilisations des cookies
+      </button>
+      {' '}et la{' '}
+      <button className="text-amber-500 hover:text-amber-600 font-medium">
+        politique de confidentialité
+      </button>
+    </span>
+  </label>
+</div>
 
       {/* Bouton inscription */}
       <button
