@@ -22,6 +22,9 @@ class AuthController extends Controller
         try {
             $validated = $request->validated();
 
+
+              // Log avant création
+        \Log::info('Tentative de création utilisateur', ['email' => $validated['email']]);
             // Créer l'utilisateur
             $user = User::create([
                 'name' => $validated['name'],
@@ -31,6 +34,7 @@ class AuthController extends Controller
                 'location' => $validated['location'] ?? null,
                 'role' => 'student',
             ]);
+             \Log::info('Utilisateur créé avec succès', ['user_id' => $user->id]);
 
             // Gérer le parrainage si un code est fourni
             if (isset($validated['referral_code'])) {
