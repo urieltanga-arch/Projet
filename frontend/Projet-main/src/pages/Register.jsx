@@ -1,11 +1,9 @@
-// src/pages/Register.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { authService } from '../services/api';
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [formData, setFormData] = useState({
@@ -25,6 +23,7 @@ export default function Register() {
       ...prev,
       [name]: value
     }));
+    // Effacer l'erreur du champ modifié
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,
@@ -62,8 +61,12 @@ export default function Register() {
     setLoading(true);
 
     try {
-      await register(formData);
-      navigate('/dashboard');
+      const response = await authService.register(formData);
+      
+      if (response.success) {
+        // Rediriger vers le tableau de bord
+        navigate('/dashboard');
+      }
     } catch (err) {
       console.error('Erreur inscription:', err);
       
@@ -72,7 +75,7 @@ export default function Register() {
       } else {
         setError(err.message || 'Erreur lors de l\'inscription');
       }
-    } finally {
+    } finally {  // ← "finally" était mal placé
       setLoading(false);
     }
   };
@@ -81,7 +84,7 @@ export default function Register() {
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8">
         <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold" style={{ color: '#cfbd97' }}>
+          <h2 className="text-3xl font-bold text-[--color-primary]">
             Mon Miam Miam
           </h2>
           <p className="text-gray-600 mt-2">Créer votre compte</p>
@@ -93,7 +96,7 @@ export default function Register() {
           </div>
         )}
 
-        <div className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Nom complet *
@@ -103,7 +106,7 @@ export default function Register() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="Jean Dupont"
             />
             {errors.name && (
@@ -120,7 +123,7 @@ export default function Register() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="jean@exemple.com"
             />
             {errors.email && (
@@ -137,7 +140,7 @@ export default function Register() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="+237 6XX XXX XXX"
             />
             {errors.phone && (
@@ -154,7 +157,7 @@ export default function Register() {
               name="location"
               value={formData.location}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="Résidence, Bâtiment..."
             />
           </div>
@@ -168,7 +171,7 @@ export default function Register() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="••••••••"
             />
             {errors.password && (
@@ -188,7 +191,7 @@ export default function Register() {
               name="password_confirmation"
               value={formData.password_confirmation}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="••••••••"
             />
             {errors.password_confirmation && (
@@ -205,7 +208,7 @@ export default function Register() {
               name="referral_code"
               value={formData.referral_code}
               onChange={handleChange}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#cfbd97] focus:border-transparent"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[--color-primary] focus:border-transparent"
               placeholder="ABCD1234"
             />
             {errors.referral_code && (
@@ -214,23 +217,20 @@ export default function Register() {
           </div>
 
           <button
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 rounded-lg text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            style={{ backgroundColor: '#cfbd97' }}
+            className="w-full py-3 px-4 rounded-lg text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed bg-[--color-primary] hover:opacity-90"
           >
             {loading ? 'Inscription en cours...' : 'S\'inscrire'}
           </button>
-        </div>
+        </form>
 
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-600">
             Vous avez déjà un compte ?{' '}
             <button
               onClick={() => navigate('/login')}
-              className="font-medium hover:underline"
-              style={{ color: '#cfbd97' }}
+              className="font-medium text-[--color-primary] hover:underline"
             >
               Se connecter
             </button>
