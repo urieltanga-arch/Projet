@@ -1,16 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-3xl font-bold text-white">
-                    Dashboard Restaurant
-                </h2>
-                <p class="text-white/80 text-sm mt-1">
-                    Gérez vos points et profitez de nos offres
-                </p>
-            </div>
-        </div>
-    </x-slot>
+ 
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -73,52 +62,45 @@
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <!-- Orders Card -->
-                <div class="bg-white rounded-3xl p-8 shadow-lg">
-                    <h3 class="text-black text-2xl font-bold mb-6">
-                        Dernières Commandes
-                    </h3>
-                    <div class="space-y-4">
-                        @php
-                            $displayOrders = $orders ?? [
-                                [
-                                    'id' => 1,
-                                    'name' => 'Ndole',
-                                    'date' => '22 Mars',
-                                    'price' => 1000,
-                                    'points' => 10,
-                                ],
-                                [
-                                    'id' => 2,
-                                    'name' => 'Poulet pané',
-                                    'date' => '18 Juin',
-                                    'price' => 2500,
-                                    'points' => 25,
-                                ]
-                            ];
-                        @endphp
-
-                        @foreach($displayOrders as $order)
-                            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
-                                <div class="flex items-center space-x-4">
-                                    <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                                        <span class="text-3xl">🍽️</span>
-                                    </div>
-                                    <div>
-                                        <h4 class="text-black font-bold text-lg">{{ $order['name'] ?? $order->name }}</h4>
-                                        <p class="text-gray-600 text-sm">{{ $order['date'] ?? $order->date }}</p>
-                                    </div>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-black font-bold text-xl">{{ $order['price'] ?? $order->price }}F</p>
-                                    <p class="text-green-600 text-sm font-semibold">
-                                        +{{ $order['points'] ?? $order->points }} pts
-                                    </p>
-                                </div>
-                            </div>
-                        @endforeach
+                
+<!-- Orders Card / Plats Disponibles -->
+<div class="bg-white rounded-3xl p-8 shadow-lg">
+    <h3 class="text-black text-2xl font-bold mb-6">
+        Plats Disponibles
+    </h3>
+    <div class="space-y-4">
+        @forelse($plats as $plat)
+            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+                <div class="flex items-center space-x-4">
+                    <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                        @if($plat->image_url)
+                            <img 
+                                src="{{ $plat->image_url }}" 
+                                alt="{{ $plat->name }}"
+                                class="w-full h-full object-cover"
+                                onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-3xl\'>🍽️</span>';"
+                            >
+                        @else
+                            <span class="text-3xl">🍽️</span>
+                        @endif
+                    </div>
+                    <div>
+                        <h4 class="text-black font-bold text-lg">{{ $plat->name }}</h4>
+                        <p class="text-gray-600 text-sm">{{ $plat->category ?? 'Plat principal' }}</p>
                     </div>
                 </div>
+                <div class="text-right">
+                    <p class="text-black font-bold text-xl">{{ number_format($plat->price, 0, ',', ' ') }}F</p>
+                    <p class="text-green-600 text-sm font-semibold">
+                        +{{ $plat->points }} pts
+                    </p>
+                </div>
+            </div>
+        @empty
+            <p class="text-gray-500 text-center py-8">Aucun plat disponible pour le moment</p>
+        @endforelse
+    </div>
+</div>
 
                 <!-- Promotion Card -->
                 <div class="bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-3xl p-8 shadow-lg">
