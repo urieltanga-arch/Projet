@@ -47,3 +47,20 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('referral_code')->unique()->nullable()->after('email');
+            $table->foreignId('referred_by')->nullable()->constrained('users')->onDelete('set null')->after('referral_code');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn(['referral_code', 'referred_by']);
+        });
+    }
+};
