@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use App\Models\LoyaltyPoint;
+use App\Models\Referral;
+use App\Models\Event;
+
 
 class User extends Authenticatable
 {
@@ -22,6 +26,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'referral_code',
+        'referred_by',   
     ];
 
     /**
@@ -47,5 +53,47 @@ class User extends Authenticatable
         ];
     }
 
-    
+     // Relation avec les points
+    public function loyaltyPoints()
+    {
+        return $this->hasMany(\App\Models\LoyaltyPoint::class);
+    }
+
+    // Générer automatiquement un code de parrainage
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($user) {
+            if (empty($user->referral_code)) {
+                $user->referral_code = strtoupper(substr(md5(uniqid()), 0, 8));
+            }
+        });
+    }
+
+    // Ajouter des points
+    public function addPoints(int $points, string $description)
+    {
+        $this->loyaltyPoints()->create([
+            'points' => $points,
+            'description' => $description,
+            'type' => 'earned'
+        ]);
+        $this->increment('total_points', $points);
+    }
+
+    // Utiliser des points
+    public function usePoints(int $points, string $description)
+    {
+        if ($this->total_points >= $points) {
+            $this->loyaltyPoints()->create([
+                'points' => -$points,
+                'description' => $description,
+                'type' => 'spent'
+            ]);
+            $this->decrement('total_points', $points);
+            return true;
+        }
+        return false;
+    }
 }

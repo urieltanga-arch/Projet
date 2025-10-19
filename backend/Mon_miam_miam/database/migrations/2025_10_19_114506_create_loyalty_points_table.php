@@ -19,18 +19,7 @@ return new class extends Migration
             $table->index(['user_id', 'type']);
         });
 
-        // Ajouter le code de parrainage aux utilisateurs
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('referral_code')->unique()->nullable()->after('email');
-            $table->integer('total_points')->default(0)->after('referral_code');
-        });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('loyalty_points');
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['referral_code', 'total_points']);
-        });
-    }
+
 };

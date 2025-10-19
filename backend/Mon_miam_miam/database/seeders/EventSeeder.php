@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Event;
+use Carbon\Carbon;
+
 class EventSeeder extends Seeder
 {
     public function run(): void
@@ -40,6 +43,7 @@ class EventSeeder extends Seeder
 
         foreach ($events as $event) {
             Event::create($event);
+            $this->command->info('evenement ajouté  avec succès!');
         }
     }
 }

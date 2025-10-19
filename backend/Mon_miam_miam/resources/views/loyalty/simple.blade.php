@@ -1,10 +1,14 @@
 <x-app-layout>
-    <div class="py-12 bg-gray-100 min-h-screen">
+    <div class="py-12 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
         <div class="max-w-4xl mx-auto px-4">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gray-800">Programme de Fidélité</h1>
+                <p class="text-gray-600 mt-2">Gérez vos points de fidélité et suivez votre historique</p>
+            </div>
             
             {{-- Carte des Points --}}
             <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-3xl shadow-2xl p-8 mb-8 text-white">
-                <h2 class="text-3xl font-bold mb-4">Mes Points de Fidélité</h2>
+                <h2 class="text-3xl font-bold mb-4">Points de Fidélité</h2>
                 <div class="text-6xl font-bold mb-2">{{ number_format($user->total_points) }}</div>
                 <p class="text-xl opacity-90">≈ {{ number_format(($user->total_points / 100) * 1000) }} CFA</p>
             </div>
@@ -18,7 +22,7 @@
                         <p class="text-3xl font-bold text-gray-800">{{ $user->referral_code }}</p>
                     </div>
                     <button onclick="copyCode('{{ $user->referral_code }}')" 
-                            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg">
+                            class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-lg transition">
                         Copier le code
                     </button>
                 </div>

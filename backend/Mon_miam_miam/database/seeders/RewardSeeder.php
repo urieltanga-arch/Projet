@@ -42,9 +42,9 @@ class RewardSeeder extends Seeder
             ],
         ];
 
-         DB::table('events')->insert($events);
+         DB::table('rewards')->insert($rewards);
         
-        $this->command->info('evenements créés avec succès!');
+        $this->command->info('récompense ajouté  avec succès!');
 
     }
 }

@@ -27,7 +27,7 @@
                     </x-nav-link>
                 </div>
                                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('games.index')">
                         {{ __('Mini-jeux') }}
                     </x-nav-link>
                 </div>
@@ -47,7 +47,7 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
+                        <x-dropdown-link :href="route('dashboard')" :active="request()->routeIs('referral.index')">
                             {{ __('Parrainage') }}
                         </x-dropdown-link>
 
@@ -59,9 +59,8 @@
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
                                 {{ __('Historique') }}
-                            <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                            <x-dropdown-link :href="route('loyalty.simple')" :active="request()->routeIs('loyalty.simple')"
+                                    >
                                 {{ __('Fidelite') }}
                             </x-dropdown-link>
                             </x-dropdown-link>
