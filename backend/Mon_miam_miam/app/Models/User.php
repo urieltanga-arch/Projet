@@ -27,7 +27,8 @@ class User extends Authenticatable
         'email',
         'password',
         'referral_code',
-        'referred_by',   
+        'referred_by',
+        'role'   ,
     ];
 
     /**
@@ -52,6 +53,36 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function isStudent()
+{
+    return $this->role === 'student';
+}
+
+public function isEmployee()
+{
+    return $this->role === 'employee';
+}
+
+public function isManager()
+{
+    return $this->role === 'manager';
+}
+
+public function isAdmin()
+{
+    return $this->role === 'admin';
+}
+
+public function hasRole($role)
+{
+    return $this->role === $role;
+}
+
+public function hasAnyRole(array $roles)
+{
+    return in_array($this->role, $roles);
+}
 
      // Relation avec les points
     public function loyaltyPoints()
@@ -95,5 +126,16 @@ class User extends Authenticatable
             return true;
         }
         return false;
+    }
+    // Relation avec les parrainages
+    public function referrals()
+    {
+        return $this->hasMany(\App\Models\Referral::class, 'referrer_id');
+    }
+
+    // Compter les filleuls actifs
+    public function getActiveReferralsCountAttribute()
+    {
+        return $this->referrals()->whereNotNull('referred_id')->count();
     }
 }

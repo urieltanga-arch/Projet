@@ -63,4 +63,6 @@ return new class extends Migration
             $table->dropColumn(['referral_code', 'referred_by']);
         });
     }
+
+    
 };
