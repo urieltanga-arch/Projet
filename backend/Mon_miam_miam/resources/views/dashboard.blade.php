@@ -1,4 +1,5 @@
 <x-app-layout>
+
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <!-- Welcome Section -->
@@ -28,7 +29,7 @@
                         <div>
                             <div class="flex items-baseline">
                                 <span class="text-white text-6xl font-bold">
-                                    {{ number_format($points ?? 2450, 0, ',', ' ') }}
+                                    {{ number_format($points) }}
                                 </span>
                                 <span class="text-white text-2xl font-semibold ml-2">pts</span>
                             </div>

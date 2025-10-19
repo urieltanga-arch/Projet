@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Employee;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Commande;
+use App\Models\Reclamation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeDashboardController extends Controller
 {

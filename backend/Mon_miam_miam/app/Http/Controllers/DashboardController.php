@@ -17,7 +17,7 @@ class DashboardController extends Controller
         ->get();
 
         return view('dashboard', [
-            'points' => $user->fidelity_points ?? 2450,
+            'points' => $user->total_points,
             'referralCode' => $user->referral_code ?? strtoupper(explode('@', $user->email)[0]) . '2025',
             'plats' =>$plats, 
         ]);

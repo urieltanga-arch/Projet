@@ -7,6 +7,8 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\LoyaltyController;
 use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\Employee\EmployeeDashboardController;
+use App\Http\Controllers\Employee\EmployeeController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -16,7 +18,8 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
+
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -78,26 +81,12 @@ Route::middleware(['auth'])->group(function () {
 
 
 // Routes pour les Employés
-Route::middleware(['auth', 'employee'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/dashboard', [EmployeeDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/orders', [EmployeeDashboardController::class, 'orders'])->name('orders');
-    Route::get('/statistics', [EmployeeDashboardController::class, 'statistics'])->name('statistics');
-    Route::get('/complaints', [EmployeeDashboardController::class, 'complaints'])->name('complaints');
+Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
+    Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('dashboard');
+    Route::get('/commandes', [EmployeeController::class, 'commandes'])->name('commandes');
+    Route::put('/commandes/{commande}/statut', [EmployeeController::class, 'updateStatut'])->name('commandes.updateStatut');
 });
 
-// Routes pour les Gérants
-Route::middleware(['auth', 'manager'])->prefix('manager')->name('manager.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('manager.dashboard');
-    })->name('dashboard');
-});
-
-// Routes pour les Admins
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
-});
 });
 
 require __DIR__.'/auth.php';
