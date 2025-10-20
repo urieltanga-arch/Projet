@@ -17,16 +17,27 @@
                     </x-nav-link>
                 </div>
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('menu')" :active="request()->routeIs('dashboard')">
+                    <x-nav-link :href="route('menu')" :active="request()->routeIs('menu')">
                         {{ __('Menu') }}
                     </x-nav-link>
                 </div>
-                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Panier') }}
+                
+                <!-- Panier avec compteur -->
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')" class="relative">
+                        <span>{{ __('Panier') }}</span>
+                        @php
+                            $cartCount = array_sum(array_column(session()->get('cart', []), 'quantity'));
+                        @endphp
+                        @if($cartCount > 0)
+                            <span class="absolute -top-1 -right-2 bg-yellow-500 text-black text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                                {{ $cartCount }}
+                            </span>
+                        @endif
                     </x-nav-link>
                 </div>
-                                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('games.index')">
                         {{ __('Mini-jeux') }}
                     </x-nav-link>

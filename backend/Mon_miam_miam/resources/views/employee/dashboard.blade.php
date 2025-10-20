@@ -10,13 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
+    <!-- Ajoutez la navbar ici -->
+    @include('employee.employee-navigation')
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
-            <div>
-                <h1 class="text-4xl font-bold text-gray-800">Dashboard Employé</h1>
-                <p class="text-gray-600 mt-2">Vue d'ensemble de l'activité du restaurant</p>
-            </div>
+             <h1 class="text-5xl font-bold text-black">
+                Bonjour {{ Auth::user()->name }}👋
+            </h1>
             <div class="flex items-center gap-4">
                 <select id="periodeSelect" class="px-4 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-amber-500">
                     <option value="semaine" {{ $periode === 'semaine' ? 'selected' : '' }}>Cette semaine</option>
@@ -25,25 +26,16 @@
                 </select>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
-                        Déconnexion
-                    </button>
+                  
                 </form>
             </div>
             
         </div>
+        
 
         <!-- Cartes statistiques -->
         <div class="flex items-center space-x-12 ">
-            <h1 class="text-5xl font-bold text-black">
-                Bonjour {{ Auth::user()->name }}
-            </h1>
-                    <span class="text-5xl">👋</span>
-                    <select id="periodeSelect" class="px-4 py-2 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-amber-500">
-                    <option value="semaine" {{ $periode === 'semaine' ? 'selected' : '' }}>Cette semaine</option>
-                    <option value="mois" {{ $periode === 'mois' ? 'selected' : '' }}>Ce mois</option>
-                    <option value="annee" {{ $periode === 'annee' ? 'selected' : '' }}>Cette année</option>
-                </select>
+            
                 </div>
                 
                 

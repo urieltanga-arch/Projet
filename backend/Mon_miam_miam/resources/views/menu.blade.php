@@ -1,5 +1,17 @@
 <x-app-layout>
-
+    <!-- Icône Panier dans la navigation (à ajouter dans ton layout principal) -->
+    <div class="fixed top-4 right-20 z-50">
+        <a href="{{ route('cart.index') }}" class="relative">
+            <div class="bg-yellow-500 hover:bg-yellow-600 text-black rounded-full p-3 shadow-lg transition-all">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                </svg>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-black text-white text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                    {{ array_sum(array_column(session()->get('cart', []), 'quantity')) }}
+                </span>
+            </div>
+        </a>
+    </div>
 
     <div class="py-12">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -61,7 +73,7 @@
                                 {{ $plat->name }}
                             </h3>
 
-                            <!-- Description (optionnelle) -->
+                            <!-- Description -->
                             @if($plat->description)
                                 <p class="text-gray-600 text-sm mb-4 line-clamp-2">
                                     {{ $plat->description }}
@@ -83,7 +95,7 @@
 
                                 <!-- Bouton Commander -->
                                 <button 
-                                    onclick="orderPlat({{ $plat->id }})"
+                                    onclick="addToCart({{ $plat->id }})"
                                     class="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors"
                                 >
                                     Commander
@@ -102,42 +114,71 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-black text-white mt-20">
-        <div class="container mx-auto px-4 py-12">
-
-
-            <!-- Ligne de séparation -->
-            <div class="border-t border-gray-700 mb-8"></div>
-
-            <!-- Contenu du footer -->
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                <div class="text-gray-400 text-sm">
-                    Order.cm ©Copyright {{ date('Y') }}, All Rights Reserved.
-                </div>
-                <div class="flex items-center space-x-6 text-sm">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                        Privacy Policy
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                        Terms
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                        Pricing
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                        Do not share your personal information
-                    </a>
-                </div>
-            </div>
+    <!-- Toast notification -->
+    <div id="toast" class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-4 rounded-lg shadow-lg transform translate-y-full transition-transform duration-300 z-50">
+        <div class="flex items-center space-x-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span id="toast-message">Plat ajouté au panier !</span>
         </div>
-    </footer>
+    </div>
 
     <!-- Scripts JavaScript -->
     <script>
+        // CSRF Token pour les requêtes AJAX
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        // Ajouter au panier
+        function addToCart(platId) {
+            fetch(`/panier/add/${platId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Mettre à jour le compteur du panier
+                    document.getElementById('cart-count').textContent = data.cartCount;
+                    
+                    // Afficher le toast
+                    showToast(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showToast('Erreur lors de l\'ajout au panier', 'error');
+            });
+        }
+
+        // Afficher le toast
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toast-message');
+            
+            toastMessage.textContent = message;
+            
+            if (type === 'error') {
+                toast.classList.remove('bg-green-500');
+                toast.classList.add('bg-red-500');
+            } else {
+                toast.classList.remove('bg-red-500');
+                toast.classList.add('bg-green-500');
+            }
+            
+            toast.style.transform = 'translateY(0)';
+            
+            setTimeout(() => {
+                toast.style.transform = 'translateY(150%)';
+            }, 3000);
+        }
+
         // Filtrer par catégorie
         function filterCategory(category) {
-            const dishes = document.querySelectorAll('.dish-card');
+            const dishes = document.querySelectorAll('.plat-card');
             const tabs = document.querySelectorAll('.category-tab');
 
             // Mettre à jour les onglets
@@ -165,15 +206,6 @@
             });
         }
 
-        // Commander un plat
-        function orderDish(dishId) {
-            // Rediriger vers la page de commande ou ouvrir un modal
-            window.location.href = `/order/${dishId}`;
-            
-            // Ou afficher un message de confirmation
-            // alert('Plat ajouté au panier !');
-        }
-
         // Animation au scroll
         document.addEventListener('DOMContentLoaded', function() {
             const observer = new IntersectionObserver((entries) => {
@@ -185,7 +217,7 @@
                 });
             });
 
-            document.querySelectorAll('.dish-card').forEach(card => {
+            document.querySelectorAll('.plat-card').forEach(card => {
                 card.style.opacity = '0';
                 card.style.transform = 'translateY(20px)';
                 card.style.transition = 'all 0.5s ease-out';
@@ -193,4 +225,5 @@
             });
         });
     </script>
+    
 </x-app-layout>

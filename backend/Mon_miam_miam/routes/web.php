@@ -9,15 +9,24 @@ use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\Employee\EmployeeDashboardController;
 use App\Http\Controllers\Employee\EmployeeController;
+use App\Http\Controllers\Employee\CommandeController;
+use App\Http\Controllers\Employee\CartController;
+use App\Models\Commande;
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/dashboard', function () {return view('dashboard');})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+    Route::get('/mes-points', function() {$user = auth()->user();
+        $history = $user->loyaltyPoints()->latest()->paginate(10);
+        return view('loyalty.simple', compact('user', 'history'));
+    })->name('loyalty.simple');
 
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -30,9 +39,11 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
         $history = $user->loyaltyPoints()->latest()->paginate(10);
         return view('loyalty.simple', compact('user', 'history'));
     })->name('loyalty.simple');
+    
 });
 
 Route::middleware(['auth'])->group(function () {
+    
     Route::get('/mes-points', function() {
         $user = auth()->user();
         $history = $user->loyaltyPoints()->latest()->paginate(10);
@@ -85,6 +96,140 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee
     Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('dashboard');
     Route::get('/commandes', [EmployeeController::class, 'commandes'])->name('commandes');
     Route::put('/commandes/{commande}/statut', [EmployeeController::class, 'updateStatut'])->name('commandes.updateStatut');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Gestion des commandes
+    Route::get('/commandes', [CommandeController::class, 'index'])->name('commandes');
+    
+    // Changer le statut d'une commande
+    Route::patch('/commandes/{id}/statut', [CommandeController::class, 'changerStatut'])->name('commandes.statut');
+    
+    // Annuler une commande
+    Route::patch('/commandes/{id}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+    
+    // Statistiques des commandes
+    Route::get('/commandes/statistiques', [CommandeController::class, 'statistiques'])->name('commandes.statistiques');
+    
+    // Imprimer un ticket
+    Route::get('/commandes/{id}/ticket', [CommandeController::class, 'imprimerTicket'])->name('commandes.ticket');
+    
+});
+// Routes pour les employés (protégées par authentification)
+Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
+    
+    // Gestion des commandes
+    Route::get('/commandes', [CommandeController::class, 'index'])->name('commandes');
+    
+    // Changer le statut d'une commande
+    Route::patch('/commandes/{id}/statut', [CommandeController::class, 'changerStatut'])->name('commandes.statut');
+    
+    // Annuler une commande
+    Route::patch('/commandes/{id}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+    
+    // Statistiques des commandes
+    Route::get('/commandes/statistiques', [CommandeController::class, 'statistiques'])->name('commandes.statistiques');
+    
+    // Imprimer un ticket
+    Route::get('/commandes/{id}/ticket', [CommandeController::class, 'imprimerTicket'])->name('commandes.ticket');
+    
+    // Menu
+    Route::get('/menu', function() {
+        return view('employee.menu');
+    })->name('menu');
+    
+    // Réclamations
+    Route::get('/reclamations', function() {
+        return view('employee.reclamations');
+    })->name('reclamations');
+    
+    // Statistiques
+    Route::get('/statistiques', function() {
+        return view('employee.statistiques');
+    })->name('statistiques');
+    
+    // Dashboard
+    Route::get('/dashboard', function() {
+        // Récupérer les statistiques pour le dashboard
+        $periode = request('periode', 'semaine');
+        
+        $commandesEnAttente = \App\Models\Commande::where('status', 'en_attente')->count();
+        $commandesAujourdhui = \App\Models\Commande::whereDate('created_at', today())->count();
+        $reclamationsNonTraitees = 0; // À implémenter
+        $revenuJour = \App\Models\Commande::whereDate('created_at', today())
+            ->where('status', 'livree')
+            ->sum('montant_total');
+        
+        // Statistiques pour le graphique
+        $statistiques = [
+            'labels' => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+            'commandes' => [5, 8, 12, 9, 15, 20, 18],
+            'revenus' => [25000, 40000, 55000, 45000, 70000, 95000, 85000]
+        ];
+        
+        // Activité récente
+        $activiteRecente = \App\Models\Commande::with('user')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function($commande) {
+                $icones = [
+                    'nouvelle' => '🆕',
+                    'en_preparation' => '👨‍🍳',
+                    'prete' => '✅',
+                    'en_livraison' => '🚚',
+                    'livree' => '📦',
+                    'annulee' => '❌'
+                ];
+                
+                $couleurs = [
+                    'nouvelle' => 'yellow',
+                    'en_preparation' => 'blue',
+                    'prete' => 'green',
+                    'en_livraison' => 'purple',
+                    'livree' => 'gray',
+                    'annulee' => 'red'
+                ];
+                
+                $types = [
+                    'nouvelle' => 'Nouvelle commande',
+                    'en_preparation' => 'En préparation',
+                    'prete' => 'Commande prête',
+                    'en_livraison' => 'En livraison',
+                    'livree' => 'Commande livrée',
+                    'annulee' => 'Commande annulée'
+                ];
+                
+                return [
+                    'id' => $commande->id,
+                    'numero' => $commande->numero,
+                    'type' => $types[$commande->statut] ?? 'Commande',
+                    'icone' => $icones[$commande->statut] ?? '📋',
+                    'couleur' => $couleurs[$commande->statut] ?? 'gray',
+                    'temps' => $commande->created_at->diffForHumans()
+                ];
+            });
+        
+        return view('employee.dashboard', compact(
+            'periode',
+            'commandesEnAttente',
+            'commandesAujourdhui',
+            'reclamationsNonTraitees',
+            'revenuJour',
+            'statistiques',
+            'activiteRecente'
+        ));
+    })->name('dashboard');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/panier', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/panier/add/{plat}', [CartController::class, 'add'])->name('cart.add');
+    Route::delete('/panier/remove/{plat}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::patch('/panier/update/{plat}', [CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::post('/panier/clear', [CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/panier/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::get('/commandes',[CommandeController::class, 'show'])->name('commandes.show');
 });
 
 });

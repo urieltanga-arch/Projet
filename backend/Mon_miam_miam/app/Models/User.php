@@ -10,6 +10,9 @@ use Illuminate\Support\Str;
 use App\Models\LoyaltyPoint;
 use App\Models\Referral;
 use App\Models\Event;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Commande;
+
 
 
 class User extends Authenticatable
@@ -51,6 +54,7 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'totalçpoints' => 'integer',
         ];
     }
 
@@ -138,4 +142,8 @@ public function hasAnyRole(array $roles)
     {
         return $this->referrals()->whereNotNull('referred_id')->count();
     }
+    public function commandes()
+{
+    return $this->hasMany(\App\Models\Commande::class);
+}
 }

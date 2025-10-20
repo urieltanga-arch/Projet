@@ -29,7 +29,7 @@
                         <div>
                             <div class="flex items-baseline">
                                 <span class="text-white text-6xl font-bold">
-                                    {{ number_format($points) }}
+                                    {{ auth()->user()->total_points  }}
                                 </span>
                                 <span class="text-white text-2xl font-semibold ml-2">pts</span>
                             </div>
@@ -68,36 +68,50 @@
         Plats Disponibles
     </h3>
     <div class="space-y-4">
-        @forelse($plats as $plat)
-            <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
-                <div class="flex items-center space-x-4">
-                    <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                        @if($plat->image_url)
-                            <img 
-                                src="{{ $plat->image_url }}" 
-                                alt="{{ $plat->name }}"
-                                class="w-full h-full object-cover"
-                                onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-3xl\'>🍽️</span>';"
-                            >
-                        @else
-                            <span class="text-3xl">🍽️</span>
-                        @endif
+        @if(isset($plats) && $plats->count() > 0)
+            @foreach($plats as $plat)
+                <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                            @if(isset($plat->image_url) && $plat->image_url)
+                                <img 
+                                    src="{{ $plat->image_url }}" 
+                                    alt="{{ $plat->name }}"
+                                    class="w-full h-full object-cover"
+                                    onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-3xl\'>🍽️</span>';"
+                                >
+                            @else
+                                <span class="text-3xl">🍽️</span>
+                            @endif
+                        </div>
+                        
+                        <div class="flex-1">
+                            <h4 class="text-lg font-semibold text-gray-800">{{ $plat->name }}</h4>
+                            <p class="text-sm text-gray-600 mt-1">{{ $plat->description ?? 'Description non disponible' }}</p>
+                            <div class="flex items-center space-x-4 mt-2">
+                                <span class="text-green-600 font-bold">{{ number_format($plat->price ?? 0, 2) }} €</span>
+                                <span class="text-blue-600 font-semibold">{{ $plat->points ?? 0 }} points</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <h4 class="text-black font-bold text-lg">{{ $plat->name }}</h4>
-                        <p class="text-gray-600 text-sm">{{ $plat->category ?? 'Plat principal' }}</p>
+                    
+                    <div class="flex items-center space-x-3">
+                        <button 
+                            onclick="commanderPlat({{ $plat->id }})"
+                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
+                        >
+                            Commander
+                        </button>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-black font-bold text-xl">{{ number_format($plat->price, 0, ',', ' ') }}F</p>
-                    <p class="text-green-600 text-sm font-semibold">
-                        +{{ $plat->points }} pts
-                    </p>
-                </div>
+            @endforeach
+        @else
+            <div class="text-center py-8">
+                <div class="text-6xl mb-4">🍽️</div>
+                <h4 class="text-xl font-semibold text-gray-600 mb-2">Aucun plat disponible</h4>
+                <p class="text-gray-500">Revenez plus tard pour découvrir nos nouveaux plats.</p>
             </div>
-        @empty
-            <p class="text-gray-500 text-center py-8">Aucun plat disponible pour le moment</p>
-        @endforelse
+        @endif
     </div>
 </div>
 
