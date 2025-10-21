@@ -51,7 +51,7 @@
                     
                     <div class="space-y-4">
                         @forelse($nouvelles as $commande)
-                            @include('employee.commandes.partials.card', ['commande' => $commande, 'color' => 'yellow'])
+                            @include('employee.commandes.partials.cart', ['commande' => $commande, 'color' => 'yellow'])
                         @empty
                             <div class="bg-white rounded-2xl p-6 text-center text-gray-500">
                                 Aucune nouvelle commande
@@ -95,7 +95,7 @@
                     
                     <div class="space-y-4">
                         @forelse($pretes as $commande)
-                            @include('employee.commandes.partials.card', ['commande' => $commande, 'color' => 'green'])
+                            @include('employee.commandes.partials.cart', ['commande' => $commande, 'color' => 'green'])
                         @empty
                             <div class="bg-white rounded-2xl p-6 text-center text-gray-500">
                                 Aucune commande prête

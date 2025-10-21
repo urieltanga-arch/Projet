@@ -94,7 +94,7 @@ Route::middleware(['auth'])->group(function () {
 // Routes pour les Employés
 Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
     Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('dashboard');
-    Route::get('/commandes', [EmployeeController::class, 'commandes'])->name('commandes');
+    Route::get('/commandes', [App\Http\Controllers\Employee\EmployeeController::class, 'commandes'])->name('commandes');
     Route::put('/commandes/{commande}/statut', [EmployeeController::class, 'updateStatut'])->name('commandes.updateStatut');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -119,7 +119,7 @@ Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
     
     // Gestion des commandes
-    Route::get('/commandes', [CommandeEmployeeController::class, 'index'])->name('commandes.index');
+ Route::get('/commandes', [CommandeEmployeeController::class, 'index'])->name('commandes.index');
     Route::get('/commandes/refresh', [CommandeEmployeeController::class, 'refresh'])->name('commandes.refresh');
     Route::get('/commandes/{commande}', [CommandeEmployeeController::class, 'show'])->name('commandes.show');
     Route::patch('/commandes/{commande}/status', [CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
@@ -239,14 +239,14 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/commandes',[App\Http\Controllers\Employee\CommandeEmployeeController::class, 'index'])->name('commandes.index');
-    Route::get('/commandes',[App\Http\Controllers\Employee\CommandeController::class, 'show'])->name('commandes.show');
-    Route::get('/commandes/refresh', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'refresh'])->name('commandes.refresh');
-    Route::get('/commandes/{commande}', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'show'])->name('commandes.show');
-    Route::patch('/commandes/{commande}/status', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
-    Route::post('/commandes/{commande}/note', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'addNote'])->name('commandes.addNote');
-    Route::patch('/commandes/{commande}/cancel', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
+    Route::get('/commandes', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'index'])->name('commandes.index');
+    Route::get('/commandes/refresh', [CommandeEmployeeController::class, 'refresh'])->name('commandes.refresh');
+    Route::get('/commandes/{commande}', [CommandeEmployeeController::class, 'show'])->name('commandes.show');
+    Route::patch('/commandes/{commande}/status', [CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
+    Route::post('/commandes/{commande}/note', [CommandeEmployeeController::class, 'addNote'])->name('commandes.addNote');
+    Route::patch('/commandes/{commande}/cancel', [CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
 });
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
     Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');

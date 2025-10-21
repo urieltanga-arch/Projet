@@ -21,14 +21,19 @@
                     Dashboard
                 </a>
                 
-                <a href="{{ route('employee.dashboard') }}" class="px-6 py-2 text-white hover:text-amber-500 transition-colors duration-200 text-sm font-medium relative {{ request()->routeIs('employee.commandes') ? 'text-amber-500 border-b-2 border-amber-500' : '' }}">
-                    Commandes
-                    @if(isset($commandesEnAttente) && $commandesEnAttente > 0)
-                        <span class="absolute -top-1 -right-1 bg-yellow-400 text-black text-xs font-bold px-1.5 py-0.5 rounded-full">
-                            {{ $commandesEnAttente }}
+                    <x-nav-link :href="route('employee.commandes.index')" :active="request()->routeIs('employee.commandes')">
+                        <span class="flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                            </svg>
+                            {{ __('Commandes') }}
+                            @if(isset($commandesEnAttente) && $commandesEnAttente > 0)
+                                <span class="ml-2 bg-yellow-400 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                                    {{ $commandesEnAttente }}
+                                </span>
+                            @endif
                         </span>
-                    @endif
-                </a>
+                    </x-nav-link>
                 
                 <a href="{{ route('employee.menu.index') }}" class="px-6 py-2 text-white hover:text-amber-500 transition-colors duration-200 text-sm font-medium {{ request()->routeIs('employee.menu.index') ? 'text-amber-500 border-b-2 border-amber-500' : '' }}">
                     Menu
