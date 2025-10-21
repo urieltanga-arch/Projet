@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
             'admin' => redirect()->intended('/admin/dashboard'),
             'manager' => redirect()->intended('/gerant/dashboard'),
             'employee' => redirect()->intended('/employee/dashboard'),
-            'student' => redirect()->intended('/client/dashboard'),
+            'student' => redirect()->intended('/dashboard'),
             default => redirect()->intended('/dashboard'),
         };
     }

@@ -13,7 +13,7 @@
                     <div class="text-8xl mb-4">🛒</div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">Votre panier est vide</h2>
                     <p class="text-gray-600 mb-6">Ajoutez des plats délicieux à votre panier !</p>
-                    <a href="{{ route('menu') }}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 rounded-full transition-colors">
+                    <a href="{{ route('student.menu') }}" class="inline-block bg-yellow-500 hover:bg-yellow-600 text-black font-bold px-8 py-3 rounded-full transition-colors">
                         Voir le menu
                     </a>
                 </div>
@@ -143,7 +143,7 @@
                                 </button>
                             </form>
 
-                            <a href="{{ route('menu') }}" class="block text-center text-gray-600 hover:text-black font-semibold mt-4 transition-colors">
+                            <a href="{{ route('student.menu') }}" class="block text-center text-gray-600 hover:text-black font-semibold mt-4 transition-colors">
                                 ← Continuer mes achats
                             </a>
                         </div>
