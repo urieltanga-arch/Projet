@@ -105,7 +105,7 @@
                 <div class="space-y-4 max-h-96 overflow-y-auto">
                     @forelse($activiteRecente as $activite)
                     <div class="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition cursor-pointer" 
-                         onclick="window.location.href='{{ route('employee.commandes.index') }}?commande={{ $activite['id'] }}'">
+                         onclick="window.location.href='{{ route('employee.dashboard') }}?commande={{ $activite['id'] }}'">
                         <div class="w-10 h-10 rounded-full flex items-center justify-center text-2xl
                             {{ $activite['couleur'] === 'green' ? 'bg-green-100' : '' }}
                             {{ $activite['couleur'] === 'yellow' ? 'bg-yellow-100' : '' }}
@@ -130,7 +130,7 @@
 
         <!-- Liens rapides -->
         <div class="mt-8 flex gap-4">
-            <a href="{{ route('employee.commandes.index') }}" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 hover:shadow-xl transition">
+            <a href="{{ route('employee.dashboard') }}" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-xl p-6 hover:shadow-xl transition">
                 <div class="text-4xl mb-2">📦</div>
                 <div class="text-xl font-bold">Gérer les Commandes</div>
                 <div class="text-sm opacity-90">Voir toutes les commandes</div>

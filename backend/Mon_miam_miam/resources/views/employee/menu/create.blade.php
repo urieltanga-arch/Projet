@@ -89,9 +89,9 @@
                                 class="w-full rounded-xl border-gray-300 focus:border-yellow-500 focus:ring focus:ring-yellow-200"
                             >
                                 <option value="">Choisir...</option>
-                                <option value="plat" {{ old('category') === 'plat' ? 'selected' : '' }}>Plat</option>
-                                <option value="boisson" {{ old('category') === 'boisson' ? 'selected' : '' }}>Boisson</option>
-                                <option value="dessert" {{ old('category') === 'dessert' ? 'selected' : '' }}>Dessert</option>
+                                <option value="plat" {{ old('category') === 'plat' ? 'selected' : '' }}>plat</option>
+                                <option value="boisson" {{ old('category') === 'boisson' ? 'selected' : '' }}>boisson</option>
+                                <option value="dessert" {{ old('category') === 'dessert' ? 'selected' : '' }}>dessert</option>
                             </select>
                             @error('category')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
