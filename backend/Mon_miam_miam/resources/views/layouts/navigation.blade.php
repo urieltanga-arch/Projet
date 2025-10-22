@@ -1,4 +1,4 @@
-<nav class="bg-black border-b border-gray-800">
+<nav x-data="{ mobileMenuOpen: false, userMenuOpen: false }" class="bg-black border-b border-gray-800">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-20">
@@ -29,11 +29,6 @@
                 
                 <a href="{{ route('dashboard') }}" 
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors">
-                    Parrainage
-                </a>
-                
-                <a href="{{ route('dashboard') }}" 
-                   class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors">
                     Historique
                 </a>
                 
@@ -42,23 +37,10 @@
                     Jeux
                 </a>
                 
-                <a href="{{ route('dashboard') }}" 
+                <a href="{{ route('top-clients') }}" 
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors">
                     Top 10
                 </a>
-                
-                <!-- Liens réservés aux employés, managers et admins -->
-                @if(in_array(Auth::user()->role, ['employee', 'manager', 'admin']))
-                    <a href="{{ route('employee.menu.index') }}" 
-                       class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('employee.menu.*') ? 'text-yellow-500' : '' }}">
-                        Gestion Menu
-                    </a>
-                    
-                    <a href="{{ route('employee.dashboard') }}" 
-                       class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('employee.commandes.*') ? 'text-yellow-500' : '' }}">
-                        Gestion Commandes
-                    </a>
-                @endif
             </div>
 
             <!-- Points et Panier à droite -->
@@ -68,7 +50,7 @@
                     <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                     </svg>
-                    {{ auth()->user()->total_points  }}pts
+                    {{ auth()->user()->total_points }}pts
                 </div>
                 
                 <!-- Panier -->
@@ -87,16 +69,16 @@
                 </a>
 
                 <!-- User Dropdown -->
-                <div x-data="{ open: false }" class="relative">
-                    <button @click="open = !open" class="flex items-center text-white hover:text-yellow-500 transition-colors">
+                <div class="relative">
+                    <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-white hover:text-yellow-500 transition-colors">
                         <span class="text-lg font-medium">{{ Auth::user()->name }}</span>
                         <svg class="ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
                         </svg>
                     </button>
 
-                    <div x-show="open" 
-                         @click.away="open = false"
+                    <div x-show="userMenuOpen" 
+                         @click.away="userMenuOpen = false"
                          x-transition:enter="transition ease-out duration-200"
                          x-transition:enter-start="opacity-0 scale-95"
                          x-transition:enter-end="opacity-100 scale-100"
@@ -122,10 +104,10 @@
 
             <!-- Mobile menu button -->
             <div class="md:hidden">
-                <button @click="open = !open" x-data="{ open: false }" class="text-white hover:text-yellow-500 transition-colors">
+                <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white hover:text-yellow-500 transition-colors p-2">
                     <svg class="h-8 w-8" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': !open}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                        <path :class="{'hidden': !open, 'inline-flex': open}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                     </svg>
                 </button>
             </div>
@@ -133,42 +115,73 @@
     </div>
 
     <!-- Mobile Navigation Menu -->
-    <div x-data="{ open: false }" :class="{'block': open, 'hidden': !open}" class="hidden md:hidden bg-gray-900">
+    <div x-show="mobileMenuOpen" 
+         x-transition:enter="transition ease-out duration-200"
+         x-transition:enter-start="opacity-0 transform -translate-y-2"
+         x-transition:enter-end="opacity-100 transform translate-y-0"
+         x-transition:leave="transition ease-in duration-150"
+         x-transition:leave-start="opacity-100 transform translate-y-0"
+         x-transition:leave-end="opacity-0 transform -translate-y-2"
+         class="md:hidden bg-gray-900"
+         style="display: none;">
         <div class="px-4 pt-2 pb-3 space-y-1">
-            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
+            <!-- Points affichés en haut sur mobile -->
+            <div class="flex items-center justify-center bg-yellow-500 text-black px-4 py-3 rounded-full font-bold mb-4">
+                <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+                {{ auth()->user()->total_points }}pts
+            </div>
+
+            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('dashboard') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Dashboard
             </a>
-            <a href="{{ route('menu') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
+            <a href="{{ route('menu') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('menu') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Menu
             </a>
-            <a href="{{ route('cart.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
-                Panier
+            <a href="{{ route('cart.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('cart.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
+                <div class="flex items-center justify-between">
+                    <span>Panier</span>
+                    @if($cartCount > 0)
+                        <span class="bg-yellow-500 text-black text-xs font-bold rounded-full h-6 w-6 flex items-center justify-center">
+                            {{ $cartCount }}
+                        </span>
+                    @endif
+                </div>
             </a>
-            <a href="{{ route('loyalty.simple') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
+            <a href="{{ route('loyalty.simple') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('loyalty.simple') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Fidélité
             </a>
-            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
+            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+                Historique
+            </a>
+            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('games.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Jeux
+            </a>
+            <a href="{{ route('top-clients') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+                Top 10
             </a>
             
             @if(in_array(Auth::user()->role, ['employee', 'manager', 'admin']))
-                <a href="{{ route('employee.menu.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
-                    Gestion Menu
-                </a>
-                <a href="{{ route('employee.dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
-                    Gestion Commandes
-                </a>
+                <div class="border-t border-gray-700 my-2 pt-2">
+                    <a href="{{ route('employee.menu.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+                        Gestion Menu
+                    </a>
+                    <a href="{{ route('employee.dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+                        Gestion Commandes
+                    </a>
+                </div>
             @endif
             
-            <div class="border-t border-gray-700 pt-4 pb-1">
-                <div class="px-3 text-white font-medium">{{ Auth::user()->name }}</div>
-                <div class="px-3 text-gray-400 text-sm">{{ Auth::user()->email }}</div>
-                <a href="{{ route('profile.edit') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium mt-2">
+            <div class="border-t border-gray-700 pt-4 pb-1 mt-4">
+                <div class="px-3 text-white font-medium text-lg">{{ Auth::user()->name }}</div>
+                <div class="px-3 text-gray-400 text-sm mb-2">{{ Auth::user()->email }}</div>
+                <a href="{{ route('profile.edit') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
                     Profile
                 </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="w-full text-left text-white hover:text-yellow-500 px-3 py-2 text-base font-medium">
+                    <button type="submit" class="w-full text-left text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
                         Log Out
                     </button>
                 </form>

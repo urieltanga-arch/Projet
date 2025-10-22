@@ -14,6 +14,9 @@ use App\Http\Controllers\Employee\CartController;
 use App\Models\Commande;
 use App\Http\Controllers\Employee\CommandeEmployeeController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\TopClientsController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
@@ -257,6 +260,15 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::delete('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'destroy'])->name('menu.destroy');
     Route::patch('/menu/{plat}/toggle', [App\Http\Controllers\Employee\MenuController::class, 'toggleAvailability'])->name('menu.toggle');
 });
+Route::get('/top-clients', [TopClientsController::class, 'index'])
+    ->name('top-clients')
+    ->middleware(['auth', 'verified']);
+
 });
 
+
+// Routes Administrateur (uniquement pour admin)
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+});
 require __DIR__.'/auth.php';

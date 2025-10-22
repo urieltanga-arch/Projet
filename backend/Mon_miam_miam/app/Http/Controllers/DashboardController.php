@@ -10,8 +10,15 @@ class DashboardController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
+
+
         $total_points = $user->total_points;
         $plats = $request->plats();
+                // Récupérer tous les plats disponibles, triés par catégorie
+        $plats = Plat::where('is_available', true)
+            ->latest()
+            ->limit(2)
+            ->get();
 
         if (!$user->referral_code) {
             $user->referral_code = User::generateReferralCode($user->email);
@@ -24,11 +31,7 @@ class DashboardController extends Controller
             'plats' => $plats, 
         ]);
 
-        // Récupérer tous les plats disponibles, triés par catégorie
-        $plats = Plat::where('is_available', true)
-            ->latest()
-            ->limit(2)
-            ->get();
+        
         
         return view('dashboard', compact('plats'));
     }

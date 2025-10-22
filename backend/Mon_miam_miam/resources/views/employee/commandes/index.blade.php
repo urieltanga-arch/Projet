@@ -73,7 +73,7 @@
                     
                     <div class="space-y-4">
                         @forelse($enPreparation as $commande)
-                            @include('employee.commandes.partials.card', ['commande' => $commande, 'color' => 'blue'])
+                            @include('employee.commandes.partials.cart', ['commande' => $commande, 'color' => 'blue'])
                         @empty
                             <div class="bg-white rounded-2xl p-6 text-center text-gray-500">
                                 Aucune commande en préparation
@@ -117,7 +117,7 @@
                     
                     <div class="space-y-4">
                         @forelse($livrees as $commande)
-                            @include('employee.commandes.partials.card', ['commande' => $commande, 'color' => 'gray'])
+                            @include('employee.commandes.partials.cart', ['commande' => $commande, 'color' => 'gray'])
                         @empty
                             <div class="bg-white rounded-2xl p-6 text-center text-gray-500">
                                 Aucune commande livrée

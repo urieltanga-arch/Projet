@@ -47,7 +47,7 @@ class CommandeEmployeeController extends Controller
     public function show(Commande $commande)
     {
         $commande->load(['user', 'items.plat']);
-        return view('employee.commandes.show', compact('commande'));
+        return view('employee.commandes.show', compact('commandes'));
     }
     
     /**

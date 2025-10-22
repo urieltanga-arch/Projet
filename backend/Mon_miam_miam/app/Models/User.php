@@ -144,6 +144,6 @@ public function hasAnyRole(array $roles)
     }
     public function commandes()
 {
-    return $this->hasMany(\App\Models\Commande::class);
+    return $this->hasMany(\App\Models\Commande::class, 'user_id');
 }
 }

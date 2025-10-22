@@ -21,6 +21,7 @@ class CartController extends Controller
         }
         
         return view('cart.index', compact('cart', 'montant_total'));
+        
     }
 
     /**
@@ -73,6 +74,7 @@ class CartController extends Controller
             'message' => 'Plat retiré du panier',
             'cartCount' => $this->getCartCount()
         ]);
+        
     }
 
     /**
@@ -122,43 +124,66 @@ class CartController extends Controller
     /**
      * Valider la commande
      */
-    public function checkout()
-    {
-        $cart = session()->get('cart', []);
-        
-        if (empty($cart)) {
-            return redirect()->route('menu')->with('error', 'Votre panier est vide');
-        }
-        
-        // Calculer le total
-        $montant_total = 0;
-        $totalPoints = 0;
-        
-        foreach ($cart as $item) {
-            $montant_total += $item['price'] * $item['quantity'];
-            $totalPoints += ($item['points'] ?? 0) * $item['quantity'];
-        }
-        
-        // Créer la commande
-        $commande = auth()->user()->commandes()->create([
-            'montant_total' => $montant_total,
-            'points_gagnes' => $totalPoints,
-            'status' => 'en_attente'
-        ]);
-        
-        // Ajouter les items de la commande
-        foreach ($cart as $item) {
-            $commande->items()->create([
-                'plat_id' => $item['id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price']
-            ]);
-        }
-        
-        // Vider le panier
-        session()->forget('cart');
-        
-        return redirect()->route('commandes.show', $commande->id)
-            ->with('success', 'Commande passée avec succès !');
+    public function checkout(Request $request)
+{
+    $cart = session()->get('cart', []);
+    
+    if (empty($cart)) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Votre panier est vide'
+        ], 400);
     }
+    
+    // Valider les données du formulaire
+    $validated = $request->validate([
+        'adresse_livraison' => 'required|string|max:255',
+        'telephone' => 'required|string|max:20',
+        'mode_paiement' => 'required|in:cash,mobile_money,carte',
+        'instructions' => 'nullable|string|max:500'
+    ]);
+    
+    // Calculer le total
+    $montant_total = 0;
+    $totalPoints = 0;
+    
+    foreach ($cart as $item) {
+        $montant_total += $item['price'] * $item['quantity'];
+        $totalPoints += ($item['points'] ?? 0) * $item['quantity'];
+    }
+    
+    // Créer la commande
+    $commande = auth()->user()->commandes()->create([
+        'montant_total' => $montant_total,
+        'points_gagnes' => $totalPoints,
+        'status' => 'en_attente',
+        'adresse_livraison' => $validated['adresse_livraison'],
+        'telephone' => $validated['telephone'],
+        'mode_paiement' => $validated['mode_paiement'],
+        'instructions' => $validated['instructions'] ?? null
+    ]);
+    
+    // Ajouter les items de la commande
+    foreach ($cart as $item) {
+        $commande->items()->create([
+            'plat_id' => $item['id'],
+            'quantity' => $item['quantity'],
+            'price' => $item['price']
+        ]);
+    }
+    
+    // Ajouter les points de fidélité à l'utilisateur
+    if ($totalPoints > 0) {
+        auth()->user()->addPoints($totalPoints, 'Commande #' . $commande->id);
+    }
+    
+    // Vider le panier
+    session()->forget('cart');
+    
+    return response()->json([
+        'success' => true,
+        'message' => 'Commande passée avec succès ! Vous avez gagné ' . $totalPoints . ' points de fidélité.',
+        'commande_id' => $commande->id
+    ]);
+}
 }
