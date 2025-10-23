@@ -178,7 +178,7 @@
 
         // Filtrer par catégorie
         function filterCategory(category) {
-            const dishes = document.querySelectorAll('.plat-card');
+            const plats = document.querySelectorAll('.plat-card');
             const tabs = document.querySelectorAll('.category-tab');
 
             // Mettre à jour les onglets
@@ -192,15 +192,15 @@
             activeTab.classList.add('active', 'bg-black', 'text-white');
 
             // Filtrer les plats
-            dishes.forEach(dish => {
+            plats.forEach(plat => {
                 if (category === 'all') {
-                    dish.style.display = 'block';
+                    plat.style.display = 'block';
                 } else {
-                    const dishCategory = dish.getAttribute('data-category');
-                    if (dishCategory === category) {
-                        dish.style.display = 'block';
+                    const platCategory = plat.getAttribute('category');
+                    if (platCategory === category) {
+                        plat.style.display = 'block';
                     } else {
-                        dish.style.display = 'none';
+                        plat.style.display = 'none';
                     }
                 }
             });

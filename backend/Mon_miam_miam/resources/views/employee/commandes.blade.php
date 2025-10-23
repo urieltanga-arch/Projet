@@ -1,8 +1,11 @@
+@include('layouts.employee-navigation')
 @extends('layouts.employee')
 
 @section('title', 'Gestion des Commandes')
 
 @section('content')
+
+
 <div class="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 py-8">
     <div class="container mx-auto px-4">
         <!-- Header -->

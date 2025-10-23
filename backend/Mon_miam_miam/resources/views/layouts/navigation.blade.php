@@ -27,7 +27,7 @@
                     Fidélité
                 </a>
                 
-                <a href="{{ route('dashboard') }}" 
+                <a href="{{ route('historique.index') }}" 
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors">
                     Historique
                 </a>
@@ -152,7 +152,7 @@
             <a href="{{ route('loyalty.simple') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('loyalty.simple') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Fidélité
             </a>
-            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+            <a href="{{ route('historique.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
                 Historique
             </a>
             <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('games.index') ? 'bg-gray-800 text-yellow-500' : '' }}">

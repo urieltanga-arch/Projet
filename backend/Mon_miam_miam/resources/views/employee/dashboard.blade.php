@@ -11,7 +11,7 @@
 </head>
 <body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
     <!-- Ajoutez la navbar ici -->
-    @include('employee.employee-navigation')
+    @include('layouts.employee-navigation')
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="flex justify-between items-center mb-8">
@@ -83,7 +83,7 @@
                 <div class="flex items-center justify-between mb-4">
                     <div class="text-6xl">💰</div>
                     <div class="text-right">
-                        <div class="text-4xl font-bold">{{ number_format($revenuJour / 1000, 0) }}K</div>
+                        <div class="text-4xl font-bold">{{ number_format($revenuJour, 0) }}</div>
                         <div class="text-sm opacity-90">FCFA</div>
                     </div>
                 </div>

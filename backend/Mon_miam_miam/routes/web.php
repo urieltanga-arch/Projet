@@ -265,8 +265,21 @@ Route::get('/top-clients', [TopClientsController::class, 'index'])
     ->middleware(['auth', 'verified']);
 
 });
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard admin (déjà existant)
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    
+    // GESTION DES EMPLOYÉS (NOUVEAU)
+    Route::get('/employees', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'index'])->name('employees.index');
+    Route::post('/employees', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'store'])->name('employees.store');
+    Route::put('/employees/{id}', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'update'])->name('employees.update');
+    Route::post('/employees/{id}/toggle-status', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'toggleStatus'])->name('employees.toggleStatus');
+    Route::delete('/employees/{id}', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'destroy'])->name('employees.destroy');
+});
 
-
+Route::get('/historique', [App\Http\Controllers\HistoriqueController::class, 'index'])->name('historique.index');
+Route::post('/historique/{id}/signaler', [App\Http\Controllers\HistoriqueController::class, 'signalerProbleme'])->name('historique.signaler');
+Route::post('/historique/{id}/confirmer-livraison', [App\Http\Controllers\HistoriqueController::class, 'confirmerLivraison'])->name('historique.confirmer');
 // Routes Administrateur (uniquement pour admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');

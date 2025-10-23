@@ -35,7 +35,7 @@
     <div class="p-4 space-y-2">
         @foreach($commande->items->take(3) as $item)
             <div class="flex justify-between text-sm">
-                <span class="text-gray-700">{{ $item->plat->name }} x{{ $item->quantity }}</span>
+                <span class="text-gray-700">{{ $item->plat->nom }} x{{ $item->quantity }}</span>
             </div>
         @endforeach
         
@@ -51,7 +51,7 @@
         <div class="flex items-center justify-between">
             <span class="text-sm font-semibold text-gray-700">Total</span>
             <span class="text-lg font-bold text-black">
-                {{ number_format($commande->total, 0, ',', ' ') }} FCFA
+                {{ number_format($commande->montant_total ?? 0, 0, ',', ' ') }} FCFA
             </span>
         </div>
     </div>

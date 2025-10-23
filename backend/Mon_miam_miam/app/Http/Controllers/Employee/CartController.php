@@ -134,6 +134,7 @@ class CartController extends Controller
             'message' => 'Votre panier est vide'
         ], 400);
     }
+
     
     // Valider les données du formulaire
     $validated = $request->validate([
@@ -151,9 +152,10 @@ class CartController extends Controller
         $montant_total += $item['price'] * $item['quantity'];
         $totalPoints += ($item['points'] ?? 0) * $item['quantity'];
     }
-    
+
     // Créer la commande
     $commande = auth()->user()->commandes()->create([
+        
         'montant_total' => $montant_total,
         'points_gagnes' => $totalPoints,
         'status' => 'en_attente',
@@ -174,7 +176,7 @@ class CartController extends Controller
     
     // Ajouter les points de fidélité à l'utilisateur
     if ($totalPoints > 0) {
-        auth()->user()->addPoints($totalPoints, 'Commande #' . $commande->id);
+        auth()->user()->addPoints($totalPoints, 'Commande' . $commande->id);
     }
     
     // Vider le panier
@@ -185,5 +187,16 @@ class CartController extends Controller
         'message' => 'Commande passée avec succès ! Vous avez gagné ' . $totalPoints . ' points de fidélité.',
         'commande_id' => $commande->id
     ]);
+
+    $montant_total = 0;
+foreach ($cart as $item) {
+    $montant_total += $item['price'] * $item['quantity'];
+}
+
+// Créer la commande avec le montant
+$commande = auth()->user()->commandes()->create([
+    'montant_total' => $montant_total, // ← IMPORTANT
+    'status' => 'en_attente'
+]);
 }
 }

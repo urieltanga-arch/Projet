@@ -11,7 +11,7 @@ class Commande extends Model
 
     protected $fillable = [
         'user_id',
-        'total',
+        'montant_total',
         'points_earned',
         'status',
         'notes'
@@ -47,4 +47,10 @@ class Commande extends Model
     {
         return $query->where('status', 'terminee');
     }
+
+    public function getTotalAttribute()
+    {
+    return $this->montant_total;
+    }
+
 }
