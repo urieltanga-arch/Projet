@@ -250,6 +250,8 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::patch('/commandes/{commande}/status', [CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
     Route::post('/commandes/{commande}/note', [CommandeEmployeeController::class, 'addNote'])->name('commandes.addNote');
     Route::patch('/commandes/{commande}/cancel', [CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
+     Route::get('/reclamations', [EmployeeController::class, 'reclamations'])->name('reclamations');
+    Route::put('/reclamations/{reclamation}/statut', [EmployeeController::class, 'updateStatutReclamation'])->name('reclamations.updateStatut');
 });
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
     Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');

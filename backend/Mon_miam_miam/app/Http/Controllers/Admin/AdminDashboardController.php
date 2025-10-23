@@ -194,7 +194,7 @@ class AdminDashboardController extends Controller
         foreach ($commandesAvecPoints as $commande) {
             $activites[] = [
                 'type' => 'points',
-                'message' => 'Points fidélité utilisés',
+                'message' => 'Points fidélité attribués',
                 'details' => $commande->user->name,
                 'temps' => $commande->created_at->diffForHumans(),
                 'icone' => '⭐',

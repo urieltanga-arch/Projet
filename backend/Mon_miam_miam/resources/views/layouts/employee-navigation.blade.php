@@ -141,7 +141,7 @@
                 Menu
             </a>
             
-            <a href="{{ route('employee.dashboard') }}" 
+            <a href="{{ route('employee.reclamations') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
                 Réclamations
             </a>

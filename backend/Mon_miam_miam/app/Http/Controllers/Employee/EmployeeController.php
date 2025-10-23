@@ -185,4 +185,55 @@ class EmployeeController extends Controller
             default => 'gray',
         };
     }
+
+       public function reclamations(Request $request)
+    {
+        $statut = $request->get('statut', 'tous');
+        $search = $request->get('search', '');
+        
+        $query = Reclamation::with('commande')->latest();
+        
+        // Filtrer par statut
+        if ($statut !== 'tous') {
+            $query->where('statut', $statut);
+        }
+        
+        // Recherche
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('description', 'like', "%{$search}%")
+                  ->orWhere('type_probleme', 'like', "%{$search}%")
+                  ->orWhereHas('commande', function($sq) use ($search) {
+                      $sq->where('numero_commande', 'like', "%{$search}%");
+                  });
+            });
+        }
+        
+        $reclamations = $query->paginate(15);
+        
+        // Statistiques
+        $stats = [
+            'total' => Reclamation::count(),
+            'non_traitees' => Reclamation::where('statut', 'non_traitee')->count(),
+            'en_cours' => Reclamation::where('statut', 'en_cours')->count(),
+            'resolues' => Reclamation::where('statut', 'resolue')->count(),
+        ];
+        
+        return view('employee.reclamations', compact('reclamations', 'statut', 'search', 'stats'));
+    }
+    public function updateStatutReclamation(Request $request, Reclamation $reclamation)
+    {
+        $request->validate([
+            'statut' => 'required|in:non_traitee,en_cours,resolue,fermee'
+        ]);
+
+        $reclamation->statut = $request->statut;
+        $reclamation->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Statut mis à jour avec succès',
+            'reclamation' => $reclamation
+        ]);
+    }
 }
