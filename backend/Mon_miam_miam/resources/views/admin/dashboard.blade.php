@@ -32,7 +32,7 @@
                 <!-- Vente d'Aujourd'hui -->
                 <div class="bg-black rounded-3xl p-6 shadow-xl transform hover:scale-105 transition-all">
                     <div class="flex items-center justify-between mb-4">
-                        <div class="text-6xl">👍</div>
+                        <div class="text-6xl">💵</div>
                         <div class="text-right">
                             <div class="text-white text-4xl font-bold">{{ number_format($ventesAujourdhui, 0) }}</div>
                             <div class="text-white/70 text-sm">FCFA</div>
