@@ -6,14 +6,17 @@
     <title>Statistiques Complètes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 
 <body class="bg-[#f5e6d3] font-sans">
-    <header >
+    
+    {{-- CORRECTION : Ajout des classes de style au header --}}
+    <header class="bg-yellow-500 shadow-md">
         @include('components.admin-app-layout')
     </header>
-        <div class="container mx-auto px-4 py-8">
+
+    <div class="container mx-auto px-4 py-8">
         <!-- En-tête -->
         <div class="mb-8">
             <h1 class="text-3xl font-bold text-gray-800 mb-2">Statistiques Complètes</h1>
@@ -33,7 +36,7 @@
                     <input type="date" name="end_date" value="{{ $endDate }}" 
                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent">
                 </div>
-                <button type="submit" class="px-6 py-2 bg-yellow-500 text-white font-semibold rounded-lg hover:bg-yellow-600 transition-colors">
+                <button type="submit" class="px-6 py-2 bg-yellow-500 text-black font-semibold rounded-lg hover:bg-yellow-600 transition-colors">
                     Filtrer
                 </button>
             </form>
