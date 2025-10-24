@@ -4,29 +4,21 @@
             
             <!-- Logo à gauche -->
             <div class="flex-shrink-0">
-                <a href="{{ route('employee.dashboard') }}" class="flex items-center">
+                <a href="{{ route('admin.dashboard') }}" class="flex items-center">
                     <x-application-logo class="block h-10 w-auto fill-current text-yellow-500" />
                 </a>
             </div>
 
             <!-- Navigation Links au centre (Desktop) -->
             <div class="hidden md:flex space-x-1">
-                <a href="{{ route('employee.dashboard') }}" 
-                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('employee.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('admin.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                     Dashboard
                 </a>
                 
-                <a href="{{ route('employee.commandes.index') }}" 
-                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors relative {{ request()->routeIs('employee.commandes.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
-                    Commandes
-                    @php
-                        $commandesEnAttente = \App\Models\Commande::where('status', 'en_attente')->count();
-                    @endphp
-                    @if($commandesEnAttente > 0)
-                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                            {{ $commandesEnAttente }}
-                        </span>
-                    @endif
+                <a href="{{ route('admin.employees.index') }}" 
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('admin.employees.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                    Employé
                 </a>
                 
                 <a href="{{ route('employee.menu.index') }}" 
@@ -34,14 +26,24 @@
                     Menu
                 </a>
                 
-                <a href="{{ route('employee.dashboard') }}" 
+                <a href="{{ route('admin.promotions.index') }}" 
                    class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
-                    Réclamations
+                    Promotion
                 </a>
                 
-                <a href="{{ route('employee.dashboard') }}" 
+                <a href="{{ route('admin.dashboard') }}" 
                    class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                     Statistiques
+                </a>
+                
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
+                    Configuration
+                </a>
+                
+                <a href="{{ route('admin.dashboard') }}" 
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
+                    Réclamation
                 </a>
             </div>
 
@@ -67,7 +69,7 @@
                         
                         <div class="px-4 py-2 border-b border-gray-200">
                             <p class="text-sm font-bold text-gray-800">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-gray-500">Employé</p>
+                            <p class="text-xs text-gray-500">Administrateur</p>
                         </div>
                         
                         <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">
@@ -115,25 +117,18 @@
                 </div>
                 <div>
                     <p class="text-sm font-bold text-white">{{ Auth::user()->name }}</p>
-                    <p class="text-xs text-gray-400">Employé</p>
+                    <p class="text-xs text-gray-400">Administrateur</p>
                 </div>
             </div>
 
-            <a href="{{ route('employee.dashboard') }}" 
-               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('employee.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+            <a href="{{ route('admin.dashboard') }}" 
+               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('admin.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                 Dashboard
             </a>
             
-            <a href="{{ route('employee.commandes.index') }}" 
-               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('employee.commandes.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
-                <div class="flex items-center justify-between">
-                    <span>Commandes</span>
-                    @if($commandesEnAttente > 0)
-                        <span class="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
-                            {{ $commandesEnAttente }}
-                        </span>
-                    @endif
-                </div>
+            <a href="{{ route('admin.employees.index') }}" 
+               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('admin.employees.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                Employé
             </a>
             
             <a href="{{ route('employee.menu.index') }}" 
@@ -141,14 +136,24 @@
                 Menu
             </a>
             
-            <a href="{{ route('employee.reclamations') }}" 
+            <a href="{{ route('admin.promotions.index') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
-                Réclamations
+                Promotion
             </a>
             
-            <a href="{{ route('employee.statistiques') }}" 
+            <a href="{{ route('admin.dashboard') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
                 Statistiques
+            </a>
+            
+            <a href="{{ route('admin.dashboard') }}" 
+               class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
+                Configuration
+            </a>
+            
+            <a href="{{ route('admin.dashboard') }}" 
+               class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
+                Réclamation
             </a>
 
             <!-- Actions utilisateur -->

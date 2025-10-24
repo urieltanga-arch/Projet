@@ -26,12 +26,12 @@
                     Menu
                 </a>
                 
-                <a href="{{ route('admin.dashboard') }}" 
+                <a href="{{ route('admin.promotions.index') }}" 
                    class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                     Promotion
                 </a>
                 
-                <a href="{{ route('admin.dashboard') }}" 
+                <a href="{{ route('admin.statistiques') }}" 
                    class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                     Statistiques
                 </a>
@@ -136,12 +136,12 @@
                 Menu
             </a>
             
-            <a href="{{ route('admin.dashboard') }}" 
+            <a href="{{ route('admin.promotions.index') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
                 Promotion
             </a>
             
-            <a href="{{ route('admin.dashboard') }}" 
+            <a href="{{ route('admin.statistiques') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
                 Statistiques
             </a>

@@ -16,7 +16,8 @@ use App\Http\Controllers\Employee\CommandeEmployeeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TopClientsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
-
+use App\Http\Controllers\Admin\PromotionController;
+use App\Http\Controllers\Admin\StatistiquesController;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
@@ -252,6 +253,9 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::patch('/commandes/{commande}/cancel', [CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
      Route::get('/reclamations', [EmployeeController::class, 'reclamations'])->name('reclamations');
     Route::put('/reclamations/{reclamation}/statut', [EmployeeController::class, 'updateStatutReclamation'])->name('reclamations.updateStatut');
+    Route::get('/statistiques', [EmployeeController::class, 'statistiques'])->name('statistiques');
+    Route::get('/statistiques/export', [EmployeeController::class, 'exportStatistiques'])->name('statistiques.export');
+
 });
 Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
     Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');
@@ -285,5 +289,26 @@ Route::post('/historique/{id}/confirmer-livraison', [App\Http\Controllers\Histor
 // Routes Administrateur (uniquement pour admin)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // Page principale
+    Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
+    
+    // Routes pour les Promotions
+    Route::get('/promotions/create', [PromotionController::class, 'createPromotion'])->name('promotions.create');
+    Route::post('/promotions', [PromotionController::class, 'storePromotion'])->name('promotions.store');
+    Route::get('/promotions/{promotion}/edit', [PromotionController::class, 'editPromotion'])->name('promotions.edit');
+    Route::put('/promotions/{promotion}', [PromotionController::class, 'updatePromotion'])->name('promotions.update');
+    Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroyPromotion'])->name('promotions.destroy');
+    
+    // Routes pour les Événements
+    Route::get('/events/create', [PromotionController::class, 'createEvent'])->name('events.create');
+    Route::post('/events', [PromotionController::class, 'storeEvent'])->name('events.store');
+    Route::get('/events/{event}/edit', [PromotionController::class, 'editEvent'])->name('events.edit');
+    Route::put('/events/{event}', [PromotionController::class, 'updateEvent'])->name('events.update');
+    Route::delete('/events/{event}', [PromotionController::class, 'destroyEvent'])->name('events.destroy');
+     Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques');
+
+
 });
+
+
 require __DIR__.'/auth.php';

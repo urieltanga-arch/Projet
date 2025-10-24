@@ -61,4 +61,8 @@ class Reclamation extends Model
             return "Il y a {$days}jour" . ($days > 1 ? 's' : '');
         }
     }
+    public function reclamationsNonTraitees()
+    {
+    return $this->montant_total;
+    }
 }

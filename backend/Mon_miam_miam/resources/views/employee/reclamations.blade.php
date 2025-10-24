@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Gestion des réclamations - Order.cm</title>
+    <title>Gestion des réclamations</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <!-- Ajoutez la navbar ici -->
@@ -13,9 +13,7 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="mb-8">
-            <a href="{{ route('employee.dashboard') }}" class="text-amber-600 hover:text-amber-700 mb-2 inline-block">
-                ← Retour au dashboard
-            </a>
+            
             <h1 class="text-4xl font-bold text-gray-800">Gestion des réclamations</h1>
             <p class="text-gray-600 mt-2">Traitements de réclamation clients</p>
         </div>

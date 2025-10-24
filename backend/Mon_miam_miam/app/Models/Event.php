@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    protected $fillable =[
+        'name',
+        'event_date',
+    ];
     public function events()
 {
     return $this->belongsToMany(Event::class, 'event_participants')
