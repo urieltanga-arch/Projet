@@ -30,6 +30,12 @@ class Commande extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function plats()
+    {
+        // Ou belongsToMany, selon votre structure
+        return $this->belongsToMany(Plat::class, 'commandes')->withPivot('quantite', 'prix'); 
+    }
+
     public function items()
     {
         return $this->hasMany(CommandeItem::class, 'commande_id');

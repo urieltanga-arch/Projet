@@ -12,6 +12,7 @@ use App\Models\Referral;
 use App\Models\Event;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Commande;
+use App\Models\Plat;
 
 
 
@@ -146,4 +147,11 @@ public function hasAnyRole(array $roles)
 {
     return $this->hasMany(\App\Models\Commande::class, 'user_id');
 }
+
+public function plat(): HasMany // Ou HasOne, BelongsToMany, etc.
+    {
+        // Assurez-vous que le type de relation est correct !
+        // Par exemple, HasMany (Un utilisateur a plusieurs plats)
+        return $this->hasMany(Plat::class);
+    }
 }

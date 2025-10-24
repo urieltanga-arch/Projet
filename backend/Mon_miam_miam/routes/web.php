@@ -18,6 +18,7 @@ use App\Http\Controllers\TopClientsController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\StatistiquesController;
+use App\Http\Controllers\Gerant\DashboardGerantController;
 
 
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
@@ -309,6 +310,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
 
 });
-
-
+Route::middleware(['auth', 'role:manager'])->prefix('gerant')->name('gerant.')->group(function () {
+    // Option 1 : URL /gerant/dashboard
+    Route::get('/dashboard', [DashboardGerantController::class, 'index'])
+        ->name('gerant.dashboard');
+    
+    // Autres routes gérant...
+    // Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
+    // Route::get('/reclamations', [ReclamationController::class, 'index'])->name('reclamations');
+});
 require __DIR__.'/auth.php';
