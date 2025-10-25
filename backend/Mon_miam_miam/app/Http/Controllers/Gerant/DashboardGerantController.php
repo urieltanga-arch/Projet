@@ -3,151 +3,118 @@
 namespace App\Http\Controllers\Gerant;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Commande;
 use App\Models\User;
+use App\Models\Commande;
+use App\Models\Plat;
 use App\Models\Reclamation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 class DashboardGerantController extends Controller
 {
     public function index(Request $request)
     {
-        // Déterminer la période (jour, semaine, mois)
-        $periode = $request->get('periode', 'jour');
+        $periode = $request->get('periode', 'jour'); // jour, semaine, mois
         
-        // Calcul des dates selon la période
-        switch($periode) {
-            case 'semaine':
-                $dateDebut = Carbon::now()->startOfWeek();
-                $dateFin = Carbon::now()->endOfWeek();
-                break;
-            case 'mois':
-                $dateDebut = Carbon::now()->startOfMonth();
-                $dateFin = Carbon::now()->endOfMonth();
-                break;
-            default: // jour
-                $dateDebut = Carbon::today();
-                $dateFin = Carbon::now();
-        }
+        // Déterminer la plage de dates
+        $dateDebut = match($periode) {
+            'semaine' => Carbon::now()->startOfWeek(),
+            'mois' => Carbon::now()->startOfMonth(),
+            default => Carbon::now()->startOfDay(),
+        };
+        
+        $dateFin = Carbon::now();
 
-        // Commandes actives (en cours)
-        $commandesActives = Commande::whereIn('status', ['en_attente', 'en_preparation', 'prete'])->count();
+        // 1. Commandes actives (en_attente, en_preparation, prete)
+        $commandesActives = Commande::whereIn('status', ['en_attente', 'en_preparation', 'prete'])
+            ->count();
 
-        // Revenu de la période
+        // 2. Revenu du jour/période
         $revenuPeriode = Commande::where('status', 'livree')
             ->whereBetween('created_at', [$dateDebut, $dateFin])
             ->sum('montant_total');
 
-        // Clients actifs (ayant commandé dans la période)
+        // 3. Clients actifs (qui ont commandé dans la période)
         $clientsActifs = Commande::whereBetween('created_at', [$dateDebut, $dateFin])
             ->distinct('user_id')
             ->count('user_id');
 
-        // Performance de l'équipe (calcul simplifié)
+        // 4. Performance équipe (% de commandes livrées vs total)
         $totalCommandes = Commande::whereBetween('created_at', [$dateDebut, $dateFin])->count();
         $commandesLivrees = Commande::where('status', 'livree')
             ->whereBetween('created_at', [$dateDebut, $dateFin])
             ->count();
-        $performanceEquipe = $totalCommandes > 0 ? round(($commandesLivrees / $totalCommandes) * 100, 1) : 0;
+        
+        $performanceEquipe = $totalCommandes > 0 ? round(($commandesLivrees / $totalCommandes) * 100) : 0;
 
-        // Commandes en temps réel
-        $commandesTempsReel = Commande::whereIn('status', ['en_attente', 'en_preparation', 'prete'])
-            ->with('user')
+        // 5. Commandes en temps réel (dernières 4 commandes actives)
+        $commandesTempsReel = Commande::with(['user', 'items.plat'])
+            ->whereIn('status', ['en_attente', 'en_preparation', 'prete'])
             ->orderBy('created_at', 'desc')
-            ->limit(6)
-            ->get();
-
-        // Équipe en service
-        $equipeEnService = User::whereIn('role', ['employee', 'admin'])
-            ->where('is_suspended', false)
             ->limit(4)
             ->get();
 
-        // Alertes (réclamations non traitées)
-        $alertes = Reclamation::where('statut', 'non_traitee')
-            ->orderBy('created_at', 'desc')
+        // 6. Performances journalières (graphique)
+        $performancesJournalieres = $this->getPerformancesJournalieres($periode);
+
+        // 7. Équipe en service (employés)
+        $equipeEnService = User::whereIn('role', ['employee', 'admin'])
+            ->where('is_suspended', 0)
+            ->limit(4)
             ->get();
+
+        // 8. Alertes importantes (réclamations non traitées)
+        $alertes = Reclamation::with('commande')
+            ->where('statut', 'non_traitee')
+            ->orderBy('created_at', 'desc')
+            ->limit(5)
+            ->get();
+
         $nombreAlertes = $alertes->count();
 
-        // Performances journalières pour le graphique
-        $performancesJournalieres = $this->getPerformanceData($periode);
-
         return view('gerant.dashboard', compact(
-            'periode',
             'commandesActives',
-            'revenuPeriode', 
+            'revenuPeriode',
             'clientsActifs',
             'performanceEquipe',
             'commandesTempsReel',
+            'performancesJournalieres',
             'equipeEnService',
             'alertes',
             'nombreAlertes',
-            'performancesJournalieres'
+            'periode'
         ));
     }
 
-    private function getPerformanceData($periode)
+    private function getPerformancesJournalieres($periode)
     {
-        $data = [
-            'labels' => [],
-            'commandes' => [],
-            'revenus' => []
+        $format = match($periode) {
+            'mois' => '%Y-%m-%d',
+            'semaine' => '%Y-%m-%d',
+            default => '%H:00',
+        };
+
+        $dateDebut = match($periode) {
+            'mois' => Carbon::now()->subDays(30),
+            'semaine' => Carbon::now()->subDays(7),
+            default => Carbon::now()->startOfDay(),
+        };
+
+        $donnees = Commande::select(
+                DB::raw("DATE_FORMAT(created_at, '$format') as periode"),
+                DB::raw('COUNT(*) as total_commandes'),
+                DB::raw('SUM(CASE WHEN status = "livree" THEN montant_total ELSE 0 END) as revenus')
+            )
+            ->where('created_at', '>=', $dateDebut)
+            ->groupBy('periode')
+            ->orderBy('periode')
+            ->get();
+
+        return [
+            'labels' => $donnees->pluck('periode')->toArray(),
+            'commandes' => $donnees->pluck('total_commandes')->toArray(),
+            'revenus' => $donnees->pluck('revenus')->toArray(),
         ];
-
-        switch($periode) {
-            case 'semaine':
-                // Données pour les 7 derniers jours
-                for($i = 6; $i >= 0; $i--) {
-                    $date = Carbon::now()->subDays($i);
-                    $data['labels'][] = $date->format('D');
-                    
-                    $commandesCount = Commande::whereDate('created_at', $date)->count();
-                    $revenus = Commande::where('status', 'livree')
-                        ->whereDate('created_at', $date)
-                        ->sum('montant_total');
-                    
-                    $data['commandes'][] = $commandesCount;
-                    $data['revenus'][] = $revenus;
-                }
-                break;
-
-            case 'mois':
-                // Données pour les 4 dernières semaines
-                for($i = 3; $i >= 0; $i--) {
-                    $startWeek = Carbon::now()->subWeeks($i)->startOfWeek();
-                    $endWeek = Carbon::now()->subWeeks($i)->endOfWeek();
-                    $data['labels'][] = 'S' . ($startWeek->weekOfYear);
-                    
-                    $commandesCount = Commande::whereBetween('created_at', [$startWeek, $endWeek])->count();
-                    $revenus = Commande::where('status', 'livree')
-                        ->whereBetween('created_at', [$startWeek, $endWeek])
-                        ->sum('montant_total');
-                    
-                    $data['commandes'][] = $commandesCount;
-                    $data['revenus'][] = $revenus;
-                }
-                break;
-
-            default: // jour
-                // Données pour les 12 dernières heures
-                for($i = 11; $i >= 0; $i--) {
-                    $hour = Carbon::now()->subHours($i);
-                    $data['labels'][] = $hour->format('H:00');
-                    
-                    $startHour = $hour->copy()->startOfHour();
-                    $endHour = $hour->copy()->endOfHour();
-                    
-                    $commandesCount = Commande::whereBetween('created_at', [$startHour, $endHour])->count();
-                    $revenus = Commande::where('status', 'livree')
-                        ->whereBetween('created_at', [$startHour, $endHour])
-                        ->sum('montant_total');
-                    
-                    $data['commandes'][] = $commandesCount;
-                    $data['revenus'][] = $revenus;
-                }
-        }
-
-        return $data;
     }
 }

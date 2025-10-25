@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-
+<x-admin-app-layout>
 <body class="bg-[#f5e6d3] font-sans">
     
     {{-- CORRECTION : Ajout des classes de style au header --}}
@@ -267,3 +267,4 @@
     </script>
 </body>
 </html>
+</x-admin-app-layout>

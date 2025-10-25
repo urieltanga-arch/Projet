@@ -1,4 +1,4 @@
-<x-guest-layout>
+
     <!DOCTYPE html>
     <html lang="fr">
     <head>
@@ -265,4 +265,3 @@
         </script>
     </body>
     </html>
-</x-guest-layout>

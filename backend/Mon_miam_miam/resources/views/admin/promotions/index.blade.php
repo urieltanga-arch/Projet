@@ -12,11 +12,9 @@
         }
     </style>
 </head>
+<x-admin-app-layout>
 <body class="flex flex-col min-h-screen">
-    {{-- Header --}}
-    <header >
-        @include('components.admin-app-layout')
-    </header>
+  
 
     {{-- Contenu principal --}}
     <main class="flex-grow">
@@ -205,3 +203,5 @@
     
 </body>
 </html>
+
+</x-admin-app-layout>

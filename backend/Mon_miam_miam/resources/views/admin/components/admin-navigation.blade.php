@@ -141,7 +141,7 @@
                 Promotion
             </a>
             
-            <a href="{{ route('admin.dashboard') }}" 
+            <a href="{{ route('admin.statistiques') }}" 
                class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">
                 Statistiques
             </a>

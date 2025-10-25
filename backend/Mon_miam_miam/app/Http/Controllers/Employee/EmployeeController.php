@@ -259,10 +259,12 @@ public function statistiques(Request $request)
         ->count();
 
     // 2. Chiffre d'affaires
+    
+    
     $chiffreAffaires = Commande::where('created_at', '>=', $dateDebut)
         ->whereNotIn('status', ['annulee'])
         ->sum('montant_total');
-
+    
     // 3. Graphique évolution des ventes
     $evolutionVentes = $this->getEvolutionVentes($dateDebut, $periode);
 

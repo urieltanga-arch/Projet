@@ -51,7 +51,7 @@
                         <div class="text-sm opacity-90">En attente</div>
                     </div>
                 </div>
-                <div class="text-lg font-semibold">Commandes en attente</div>
+                <div class="text-lg font-semibold"><a href="commandes">Commandes en attente</a></div>
             </div>
 
             <!-- Commandes du jour -->
@@ -63,7 +63,7 @@
                         <div class="text-sm opacity-90">Aujourd'hui</div>
                     </div>
                 </div>
-                <div class="text-lg font-semibold">Commandes du jour</div>
+                <div class="text-lg font-semibold"><a href="commandes">Commandes du jour</a></div>
             </div>
 
             <!-- Réclamations -->
@@ -75,7 +75,7 @@
                         <div class="text-sm opacity-90">Non traitées</div>
                     </div>
                 </div>
-                <div class="text-lg font-semibold">Réclamation</div>
+                <div class="text-lg font-semibold"><a href="reclamations">Réclamation</a></div>
             </div>
 
             <!-- Revenu du jour -->
@@ -135,7 +135,7 @@
                 <div class="text-xl font-bold">Gérer les Commandes</div>
                 <div class="text-sm opacity-90">Voir toutes les commandes</div>
             </a>
-            <a href="#" class="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-6 hover:shadow-xl transition">
+            <a href="statistiques" class="flex-1 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-xl p-6 hover:shadow-xl transition">
                 <div class="text-4xl mb-2">📊</div>
                 <div class="text-xl font-bold">Statistiques Détaillées</div>
                 <div class="text-sm opacity-90">Analyses approfondies</div>

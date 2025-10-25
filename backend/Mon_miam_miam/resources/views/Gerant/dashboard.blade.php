@@ -392,47 +392,123 @@
             }
         }
     </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar">
-        <div class="logo">
-            <span>🍽️</span>
-            <span>SEEDUC SPACES</span>
+    <nav x-data="{ mobileMenuOpen: false, userMenuOpen: false }" class="bg-black border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <a href="#" class="flex items-center text-white">
+                        <span class="text-2xl mr-2">🍽️</span>
+                        <span class="font-bold text-lg">ZEDUC SPACES</span>
+                    </a>
+                </div>
+                <div class="hidden md:flex space-x-1">
+                    <a href="{{ route('gerant.dashboard') }}"
+                       class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('gerant.gerant.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                        Dashboard
+                    </a>
+                    <a href="#"
+                       class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
+                        Employé
+                    </a>
+                    <a href="#"
+                       class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
+                        Statistiques
+                    </a>
+                     <a href="{{ route('admin.reclamations.index') }}"
+   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('admin.reclamations.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+    Réclamation
+</a>
+                </div>
+                <div class="hidden md:flex items-center">
+                    <div class="relative">
+                        <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-yellow-500 hover:text-yellow-400 transition-colors focus:outline-none">
+                            <svg class="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </button>
+                        <div x-show="userMenuOpen"
+                             @click.away="userMenuOpen = false"
+                             x-transition
+                             class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 z-50"
+                             style="display: none;">
+                            <div class="px-4 py-2 border-b border-gray-200">
+                                <p class="text-sm font-bold text-gray-800">{{ auth()->user()->name }}</p>
+                                <p class="text-xs text-gray-500">Gérant</p>
+                            </div>
+                            <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">
+                                Mon Profil
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">
+                                    Déconnexion
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button @click="mobileMenuOpen = !mobileMenuOpen" class="text-white hover:text-yellow-500 transition-colors p-2 focus:outline-none">
+                        <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
+                            <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                            <path x-show="mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
-        <ul class="nav-links">
-            <li><a href="{{ route('dashboard') }}">Dashboard</a></li>
-            <li><a href="#">Employé</a></li>
-            <li><a href="#">Statistiques</a></li>
-            <li><a href="#">Réclamation</a></li>
-        </ul>
-        <div class="user-icon">👤</div>
+        <div x-show="mobileMenuOpen" class="md:hidden bg-gray-900" style="display: none;">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="{{ route('gerant.dashboard') }}" class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('gerant.gerant.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">Dashboard</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Employé</a>
+                <a href="#" class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Statistiques</a>
+<a href="{{ route('admin.reclamations.index') }}" 
+   class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('admin.reclamations.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+    Réclamation
+</a>               <div class="border-t border-gray-700 pt-3 mt-3">
+                     <div class="flex items-center gap-3 pb-3 mb-3">
+                        <div>
+                            <p class="text-sm font-bold text-white">{{ auth()->user()->name }}</p>
+                            <p class="text-xs text-gray-400">Gérant</p>
+                        </div>
+                    </div>
+                    <a href="#" class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Mon Profil</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="w-full text-left px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Déconnexion</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </nav>
 
+
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <h1>Dashboard Gérant</h1>
             <p>Vue d'ensemble en temps réel du restaurant</p>
         </div>
 
-<!-- Sélecteur de période -->
-<div class="periode-selector">
-    <a href="{{ route('gerant.gerant.dashboard', ['periode' => 'jour']) }}" 
-       class="periode-btn {{ ($periode ?? 'jour') === 'jour' ? 'active' : '' }}">
-        Jour
-    </a>
-    <a href="{{ route('gerant.gerant.dashboard', ['periode' => 'semaine']) }}" 
-       class="periode-btn {{ ($periode ?? 'jour') === 'semaine' ? 'active' : '' }}">
-        Semaine
-    </a>
-    <a href="{{ route('gerant.gerant.dashboard', ['periode' => 'mois']) }}" 
-       class="periode-btn {{ ($periode ?? 'jour') === 'mois' ? 'active' : '' }}">
-        Mois
-    </a>
-</div>
+        <div class="periode-selector">
+            <a href="{{ route('gerant.dashboard', ['periode' => 'jour']) }}" 
+               class="periode-btn {{ ($periode ?? 'jour') === 'jour' ? 'active' : '' }}">
+                Jour
+            </a>
+            <a href="{{ route('gerant.dashboard', ['periode' => 'semaine']) }}" 
+               class="periode-btn {{ ($periode ?? 'jour') === 'semaine' ? 'active' : '' }}">
+                Semaine
+            </a>
+            <a href="{{ route('gerant.dashboard', ['periode' => 'mois']) }}" 
+               class="periode-btn {{ ($periode ?? 'jour') === 'mois' ? 'active' : '' }}">
+                Mois
+            </a>
+        </div>
 
-        <!-- Alertes importantes -->
         @if($nombreAlertes > 0)
         <div class="alert-box">
             <div class="alert-content">
@@ -446,7 +522,6 @@
         </div>
         @endif
 
-        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card commandes">
                 <div>
@@ -484,9 +559,7 @@
             </div>
         </div>
 
-        <!-- Content Grid -->
         <div class="content-grid">
-            <!-- Commandes en temps réel -->
             <div class="card">
                 <h3>Commandes en Temps Réel</h3>
                 @forelse($commandesTempsReel as $commande)
@@ -516,7 +589,6 @@
                 @endforelse
             </div>
 
-            <!-- Performances Journalières -->
             <div class="card">
                 <h3>Performances {{ $periode === 'jour' ? 'Journalières' : ($periode === 'semaine' ? 'Hebdomadaires' : 'Mensuelles') }}</h3>
                 <div class="chart-container">
@@ -525,7 +597,6 @@
             </div>
         </div>
 
-        <!-- Équipe en Service -->
         <div class="card">
             <h3>Équipe en Service</h3>
             <div class="equipe-grid">
@@ -542,9 +613,14 @@
                 @endforeach
             </div>
         </div>
+      
+  {{-- Bouton ou lien vers les réclamations --}}
+<a href="{{ route('admin.reclamations.index') }}" class="btn-reclamations">
+    Réclamations
+</a>
+        
     </div>
 
-    <!-- Footer -->
     <div class="footer">
         <p>Order.cm ©Copyright 2025, All Rights Reserved. | Privacy Policy | Terms | Pricing | Do not share your personal information</p>
     </div>

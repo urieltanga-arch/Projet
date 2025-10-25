@@ -55,7 +55,7 @@
                         </p>
                     </div>
                     <p class="text-gray-600 text-sm">
-                        Partagez votre code et gagnez 100 points par filleul !
+                        Partagez votre code et gagnez 10 points par filleul !
                     </p>
                 </div>
             </div>

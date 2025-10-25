@@ -133,19 +133,22 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="accueil" class="hero-section flex items-center justify-center text-white px-4">
-        <div class="text-center max-w-4xl">
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
-                BIENVENUE CHEZ ZEDUC-SP@CE
-            </h1>
-            <p class="text-xl md:text-2xl mb-8 text-gray-200">
-                Restaurant & Terrasse avec vue sur la Dizimba
-            </p>
-            <a href="#menu" class="inline-block bg-amber-500 text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-amber-600 transition transform hover:scale-105">
-                Découvrir le Menu
-            </a>
-        </div>
-    </section>
+<section id="accueil" class="hero-section relative flex items-center justify-center text-white px-4 bg-cover bg-center bg-no-repeat min-h-screen" style="background-image: url('https://pokaa.fr/wp-content/uploads/2021/07/chez-ani-cuisine-africaine-8.jpeg');">
+    <!-- Overlay pour meilleure lisibilité -->
+    <div class="absolute inset-0 bg-black bg-opacity-40"></div>
+    
+    <div class="text-center max-w-4xl relative z-10">
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 animate-fade-in">
+            BIENVENUE CHEZ ZEDUC-SP@CE
+        </h1>
+        <p class="text-xl md:text-2xl mb-8 text-gray-200">
+            Restaurant & Terrasse avec vue sur la Dizimba
+        </p>
+        <a href="#menu" class="inline-block bg-amber-500 text-black px-8 py-4 rounded-full text-lg font-semibold hover:bg-amber-600 transition transform hover:scale-105">
+            Découvrir le Menu
+        </a>
+    </div>
+</section>
 
     <!-- Menu du Jour - 3 plats seulement -->
     <section id="menu" class="py-20 bg-amber-50">

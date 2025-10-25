@@ -4,14 +4,9 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MenuController;
-use App\Http\Controllers\LoyaltyController;
-use App\Http\Controllers\ReferralController;
 use App\Http\Controllers\GameController;
-use App\Http\Controllers\Employee\EmployeeDashboardController;
 use App\Http\Controllers\Employee\EmployeeController;
 use App\Http\Controllers\Employee\CommandeController;
-use App\Http\Controllers\Employee\CartController;
-use App\Models\Commande;
 use App\Http\Controllers\Employee\CommandeEmployeeController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\TopClientsController;
@@ -19,36 +14,32 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\PromotionController;
 use App\Http\Controllers\Admin\StatistiquesController;
 use App\Http\Controllers\Gerant\DashboardGerantController;
+use App\Http\Controllers\ReclamationController;
 
-
+// ============================================
+// ROUTES PUBLIQUES (sans authentification)
+// ============================================
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
-Route::get('/dashboard', function () {return view('dashboard');})->middleware(['auth', 'verified'])->name('dashboard');
-Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-Route::get('/mes-points', function() {$user = auth()->user();
-        $history = $user->loyaltyPoints()->latest()->paginate(10);
-        return view('loyalty.simple', compact('user', 'history'));
-    })->name('loyalty.simple');
-
-Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+// ============================================
+// ROUTES AUTHENTIFIÉES (tous les utilisateurs connectés)
+// ============================================
+Route::middleware(['auth', 'verified'])->group(function () {
+    
+    // Dashboard général
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+    
+    // Profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Menu
     Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-    Route::get('/menu/{id}', [MenuController::class, 'show'])->name('menu.show');
-    Route::get('/mes-points', function() {$user = auth()->user();
-        $history = $user->loyaltyPoints()->latest()->paginate(10);
-        return view('loyalty.simple', compact('user', 'history'));
-    })->name('loyalty.simple');
     
-});
-
-Route::middleware(['auth'])->group(function () {
-    
+    // Points de fidélité
     Route::get('/mes-points', function() {
         $user = auth()->user();
         $history = $user->loyaltyPoints()->latest()->paginate(10);
@@ -56,11 +47,10 @@ Route::middleware(['auth'])->group(function () {
         return view('loyalty.simple', compact('user', 'history', 'referrals'));
     })->name('loyalty.simple');
     
-    // NOUVELLE ROUTE pour valider un code de parrainage
+    // Validation du code de parrainage
     Route::post('/valider-parrainage', function() {
         $code = request('referral_code');
         
-        // Trouver le parrain
         $referrer = \App\Models\User::where('referral_code', $code)->first();
         
         if (!$referrer) {
@@ -75,109 +65,81 @@ Route::middleware(['auth'])->group(function () {
             return back()->with('error', 'Vous avez déjà utilisé un code de parrainage');
         }
         
-        // Créer le parrainage
         \App\Models\Referral::create([
             'referrer_id' => $referrer->id,
             'referred_id' => auth()->id(),
-            'points_earned' => 100
+            'points_earned' => 10
         ]);
         
-        // Mettre à jour l'utilisateur
         auth()->user()->update(['referred_by' => $referrer->id]);
+        $referrer->addPoints(10, 'Parrainage de ' . auth()->user()->name);
+        auth()->user()->addPoints(5, 'Bonus de bienvenue - parrainage');
         
-        // Donner 100 points au parrain
-        $referrer->addPoints(100, 'Parrainage de ' . auth()->user()->name);
-        
-        // Donner 50 points au filleul
-        auth()->user()->addPoints(50, 'Bonus de bienvenue - parrainage');
-        
-        return back()->with('success', 'Code validé ! Vous avez gagné 50 points et votre parrain 100 points !');
-        
+        return back()->with('success', 'Code validé ! Vous avez gagné 5 points et votre parrain 10 points !');
     })->name('referral.validate');
-
-
-// Routes pour les Employés
-Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/dashboard', [EmployeeController::class, 'dashboard'])->name('dashboard');
-    Route::get('/commandes', [App\Http\Controllers\Employee\EmployeeController::class, 'commandes'])->name('commandes');
-    Route::put('/commandes/{commande}/statut', [EmployeeController::class, 'updateStatut'])->name('commandes.updateStatut');
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    // Gestion des commandes
-    Route::get('/commandes', [CommandeController::class, 'index'])->name('commandes');
     
-    // Changer le statut d'une commande
-    Route::patch('/commandes/{id}/statut', [CommandeController::class, 'changerStatut'])->name('commandes.statut');
+    // Top clients
+    Route::get('/top-clients', [TopClientsController::class, 'index'])->name('top-clients');
     
-    // Annuler une commande
-    Route::patch('/commandes/{id}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+    // Panier
+    Route::get('/panier', [App\Http\Controllers\Employee\CartController::class, 'index'])->name('cart.index');
+    Route::post('/panier/add/{plat}', [App\Http\Controllers\Employee\CartController::class, 'add'])->name('cart.add');
+    Route::delete('/panier/remove/{plat}', [App\Http\Controllers\Employee\CartController::class, 'remove'])->name('cart.remove');
+    Route::patch('/panier/update/{plat}', [App\Http\Controllers\Employee\CartController::class, 'updateQuantity'])->name('cart.update');
+    Route::post('/panier/clear', [App\Http\Controllers\Employee\CartController::class, 'clear'])->name('cart.clear');
+    Route::post('/panier/checkout', [App\Http\Controllers\Employee\CartController::class, 'checkout'])->name('cart.checkout');
     
-    // Statistiques des commandes
-    Route::get('/commandes/statistiques', [CommandeController::class, 'statistiques'])->name('commandes.statistiques');
-    
-    // Imprimer un ticket
-    Route::get('/commandes/{id}/ticket', [CommandeController::class, 'imprimerTicket'])->name('commandes.ticket');
-    
+    // Historique des commandes
+    Route::get('/historique', [App\Http\Controllers\HistoriqueController::class, 'index'])->name('historique.index');
+    Route::post('/historique/{id}/signaler', [App\Http\Controllers\HistoriqueController::class, 'signalerProbleme'])->name('historique.signaler');
+    Route::post('/historique/{id}/confirmer-livraison', [App\Http\Controllers\HistoriqueController::class, 'confirmerLivraison'])->name('historique.confirmer');
 });
-// Routes pour les employés (protégées par authentification)
-Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
-    
-    // Gestion des commandes
- Route::get('/commandes', [CommandeEmployeeController::class, 'index'])->name('commandes.index');
-    Route::get('/commandes/refresh', [CommandeEmployeeController::class, 'refresh'])->name('commandes.refresh');
-    Route::get('/commandes/{commande}', [CommandeEmployeeController::class, 'show'])->name('commandes.show');
-    Route::patch('/commandes/{commande}/status', [CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
-    Route::post('/commandes/{commande}/note', [CommandeEmployeeController::class, 'addNote'])->name('commandes.addNote');
-    Route::patch('/commandes/{commande}/cancel', [CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
-    // Changer le statut d'une commande
 
-    Route::patch('/commandes/{id}/statut', [CommandeController::class, 'changerStatut'])->name('commandes.statut');
+// ============================================
+// ROUTES POUR LES JEUX (tous les utilisateurs authentifiés)
+// ============================================
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/games', [GameController::class, 'index'])->name('games.index');
+    Route::get('/games/{id}', [GameController::class, 'show'])->name('games.show');
+});
+
+// ============================================
+// ROUTES STUDENTS
+// ============================================
+Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+    Route::get('/menu/{id}', [MenuController::class, 'show'])->name('menu.show');
     
-    // Annuler une commande
-    Route::patch('/commandes/{id}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
-    
-    // Statistiques des commandes
-    Route::get('/commandes/statistiques', [CommandeController::class, 'statistiques'])->name('commandes.statistiques');
-    
-    // Imprimer un ticket
-    Route::get('/commandes/{id}/ticket', [CommandeController::class, 'imprimerTicket'])->name('commandes.ticket');
-    
-    // Menu
-    Route::get('/menu', function() {
-        return view('employee.menu');
-    })->name('menu');
-    
-    // Réclamations
-    Route::get('/reclamations', function() {
-        return view('employee.reclamations');
-    })->name('reclamations');
-    
-    // Statistiques
-    Route::get('/statistiques', function() {
-        return view('employee.statistiques');
-    })->name('statistiques');
+    Route::get('/mes-points', function() {
+        $user = auth()->user();
+        $history = $user->loyaltyPoints()->latest()->paginate(10);
+        return view('loyalty.simple', compact('user', 'history'));
+    })->name('loyalty.simple');
+});
+
+// ============================================
+// ROUTES EMPLOYEES
+// ============================================
+Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
     
     // Dashboard
     Route::get('/dashboard', function() {
-        // Récupérer les statistiques pour le dashboard
         $periode = request('periode', 'semaine');
         
         $commandesEnAttente = \App\Models\Commande::where('status', 'en_attente')->count();
         $commandesAujourdhui = \App\Models\Commande::whereDate('created_at', today())->count();
-        $reclamationsNonTraitees = 0; // À implémenter
+        $reclamationsNonTraitees = 0;
         $revenuJour = \App\Models\Commande::whereDate('created_at', today())
             ->where('status', 'livree')
             ->sum('montant_total');
         
-        // Statistiques pour le graphique
         $statistiques = [
             'labels' => ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
             'commandes' => [5, 8, 12, 9, 15, 20, 18],
             'revenus' => [25000, 40000, 55000, 45000, 70000, 95000, 85000]
         ];
         
-        // Activité récente
         $activiteRecente = \App\Models\Commande::with('user')
             ->latest()
             ->take(10)
@@ -230,35 +192,20 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
             'activiteRecente'
         ));
     })->name('dashboard');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/panier', [App\Http\Controllers\Employee\CartController::class, 'index'])->name('cart.index');
-    Route::post('/panier/add/{plat}', [App\Http\Controllers\Employee\CartController::class, 'add'])->name('cart.add');
-    Route::delete('/panier/remove/{plat}', [App\Http\Controllers\Employee\CartController::class, 'remove'])->name('cart.remove');
-    Route::patch('/panier/update/{plat}', [App\Http\Controllers\Employee\CartController::class, 'updateQuantity'])->name('cart.update');
-    Route::post('/panier/clear', [App\Http\Controllers\Employee\CartController::class, 'clear'])->name('cart.clear');
-    Route::post('/panier/checkout', [App\Http\Controllers\Employee\CartController::class, 'checkout'])->name('cart.checkout');
     
-
-
-});
-
-
-Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
-    Route::get('/commandes', [App\Http\Controllers\Employee\CommandeEmployeeController::class, 'index'])->name('commandes.index');
+    // Gestion des commandes
+    Route::get('/commandes', [CommandeEmployeeController::class, 'index'])->name('commandes.index');
     Route::get('/commandes/refresh', [CommandeEmployeeController::class, 'refresh'])->name('commandes.refresh');
     Route::get('/commandes/{commande}', [CommandeEmployeeController::class, 'show'])->name('commandes.show');
     Route::patch('/commandes/{commande}/status', [CommandeEmployeeController::class, 'updateStatus'])->name('commandes.updateStatus');
     Route::post('/commandes/{commande}/note', [CommandeEmployeeController::class, 'addNote'])->name('commandes.addNote');
     Route::patch('/commandes/{commande}/cancel', [CommandeEmployeeController::class, 'cancel'])->name('commandes.cancel');
-     Route::get('/reclamations', [EmployeeController::class, 'reclamations'])->name('reclamations');
-    Route::put('/reclamations/{reclamation}/statut', [EmployeeController::class, 'updateStatutReclamation'])->name('reclamations.updateStatut');
-    Route::get('/statistiques', [EmployeeController::class, 'statistiques'])->name('statistiques');
-    Route::get('/statistiques/export', [EmployeeController::class, 'exportStatistiques'])->name('statistiques.export');
-
-});
-Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(function () {
+    Route::patch('/commandes/{id}/statut', [CommandeController::class, 'changerStatut'])->name('commandes.statut');
+    Route::patch('/commandes/{id}/annuler', [CommandeController::class, 'annuler'])->name('commandes.annuler');
+    Route::get('/commandes/statistiques', [CommandeController::class, 'statistiques'])->name('commandes.statistiques');
+    Route::get('/commandes/{id}/ticket', [CommandeController::class, 'imprimerTicket'])->name('commandes.ticket');
+    
+    // Gestion du menu
     Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');
     Route::get('/menu/create', [App\Http\Controllers\Employee\MenuController::class, 'create'])->name('menu.create');
     Route::post('/menu', [App\Http\Controllers\Employee\MenuController::class, 'store'])->name('menu.store');
@@ -266,57 +213,63 @@ Route::middleware(['auth'])->prefix('employee')->name('employee.')->group(functi
     Route::put('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'update'])->name('menu.update');
     Route::delete('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'destroy'])->name('menu.destroy');
     Route::patch('/menu/{plat}/toggle', [App\Http\Controllers\Employee\MenuController::class, 'toggleAvailability'])->name('menu.toggle');
+    
+    // Réclamations
+    Route::get('/reclamations', [EmployeeController::class, 'reclamations'])->name('reclamations');
+    Route::put('/reclamations/{reclamation}/statut', [EmployeeController::class, 'updateStatutReclamation'])->name('reclamations.updateStatut');
+    
+    // Statistiques
+    Route::get('/statistiques', [EmployeeController::class, 'statistiques'])->name('statistiques');
+    Route::get('/statistiques/export', [EmployeeController::class, 'exportStatistiques'])->name('statistiques.export');
 });
-Route::get('/top-clients', [TopClientsController::class, 'index'])
-    ->name('top-clients')
-    ->middleware(['auth', 'verified']);
 
-});
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Dashboard admin (déjà existant)
+// ============================================
+// ROUTES ADMIN (admin, manager, student)
+// ============================================
+Route::middleware(['auth', 'role:admin,manager,student'])->prefix('admin')->name('admin.')->group(function () {
+    
+    // Dashboard
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     
-    // GESTION DES EMPLOYÉS (NOUVEAU)
+    // Gestion des employés
     Route::get('/employees', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'index'])->name('employees.index');
     Route::post('/employees', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'store'])->name('employees.store');
     Route::put('/employees/{id}', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'update'])->name('employees.update');
     Route::post('/employees/{id}/toggle-status', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'toggleStatus'])->name('employees.toggleStatus');
     Route::delete('/employees/{id}', [App\Http\Controllers\Admin\EmployeeManagementController::class, 'destroy'])->name('employees.destroy');
-});
-
-Route::get('/historique', [App\Http\Controllers\HistoriqueController::class, 'index'])->name('historique.index');
-Route::post('/historique/{id}/signaler', [App\Http\Controllers\HistoriqueController::class, 'signalerProbleme'])->name('historique.signaler');
-Route::post('/historique/{id}/confirmer-livraison', [App\Http\Controllers\HistoriqueController::class, 'confirmerLivraison'])->name('historique.confirmer');
-// Routes Administrateur (uniquement pour admin)
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-    // Page principale
-    Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
     
-    // Routes pour les Promotions
+    // Réclamations
+    Route::get('/reclamations', [ReclamationController::class, 'index'])->name('reclamations.index');
+    Route::get('/reclamations/{id}', [ReclamationController::class, 'show'])->name('reclamations.show');
+    Route::patch('/reclamations/{id}/status', [ReclamationController::class, 'updateStatus'])->name('reclamations.updateStatus');
+    Route::delete('/reclamations/{id}', [ReclamationController::class, 'destroy'])->name('reclamations.destroy');
+    
+    // Promotions et événements
+    Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
     Route::get('/promotions/create', [PromotionController::class, 'createPromotion'])->name('promotions.create');
     Route::post('/promotions', [PromotionController::class, 'storePromotion'])->name('promotions.store');
     Route::get('/promotions/{promotion}/edit', [PromotionController::class, 'editPromotion'])->name('promotions.edit');
     Route::put('/promotions/{promotion}', [PromotionController::class, 'updatePromotion'])->name('promotions.update');
     Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroyPromotion'])->name('promotions.destroy');
     
-    // Routes pour les Événements
     Route::get('/events/create', [PromotionController::class, 'createEvent'])->name('events.create');
     Route::post('/events', [PromotionController::class, 'storeEvent'])->name('events.store');
     Route::get('/events/{event}/edit', [PromotionController::class, 'editEvent'])->name('events.edit');
     Route::put('/events/{event}', [PromotionController::class, 'updateEvent'])->name('events.update');
     Route::delete('/events/{event}', [PromotionController::class, 'destroyEvent'])->name('events.destroy');
-     Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques');
-
-
-});
-Route::middleware(['auth', 'role:manager'])->prefix('gerant')->name('gerant.')->group(function () {
-    // Option 1 : URL /gerant/dashboard
-    Route::get('/dashboard', [DashboardGerantController::class, 'index'])
-        ->name('gerant.dashboard');
     
-    // Autres routes gérant...
-    // Route::get('/employees', [EmployeeController::class, 'index'])->name('employees');
-    // Route::get('/reclamations', [ReclamationController::class, 'index'])->name('reclamations');
+    // Statistiques
+    Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques');
 });
+
+// ============================================
+// ROUTES GERANT (manager)
+// ============================================
+Route::middleware(['auth', 'role:manager'])->prefix('gerant')->name('gerant.')->group(function () {
+    Route::get('/dashboard', [DashboardGerantController::class, 'index'])->name('dashboard');
+});
+
+// ============================================
+// ROUTES D'AUTHENTIFICATION
+// ============================================
 require __DIR__.'/auth.php';

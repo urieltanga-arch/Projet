@@ -27,12 +27,13 @@
                     Fidélité
                 </a>
                 
-                <a href="{{ route('historique.index') }}" 
-                   class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors">
-                    Historique
-                </a>
+                @if(Route::has('historique.index'))
+                    <a href="{{ route('historique.index') }}" class="nav-link">Historique</a>
+                @else
+                    <a href="#" class="nav-link text-muted">Historique (bientôt)</a>
+                @endif
                 
-                <a href="{{ route('dashboard') }}" 
+                <a href="{{ route('games.index') }}" 
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('games.index') ? 'text-yellow-500' : '' }}">
                     Jeux
                 </a>
@@ -152,10 +153,12 @@
             <a href="{{ route('loyalty.simple') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('loyalty.simple') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Fidélité
             </a>
-            <a href="{{ route('historique.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
-                Historique
-            </a>
-            <a href="{{ route('dashboard') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('games.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
+            @if(Route::has('historique.index'))
+                <a href="{{ route('historique.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
+                    Historique
+                </a>
+            @endif
+            <a href="{{ route('games.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('games.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Jeux
             </a>
             <a href="{{ route('top-clients') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">

@@ -34,6 +34,53 @@ class Plat extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+/**
+     * Relation avec les items de commande
+     */
+    public function commandeItems()
+    {
+        return $this->hasMany(CommandeItem::class);
+    }
 
+    /**
+     * Obtenir le nombre total de ventes
+     */
+    public function getTotalVendusAttribute()
+    {
+        return $this->commandeItems()
+            ->whereHas('commande', function($query) {
+                $query->where('status', 'livree');
+            })
+            ->sum('quantite');
+    }
+
+    /**
+     * Obtenir le revenu total généré
+     */
+    public function getRevenuTotalAttribute()
+    {
+        return $this->commandeItems()
+            ->whereHas('commande', function($query) {
+                $query->where('status', 'livree');
+            })
+            ->selectRaw('SUM(quantite * prix_unitaire) as total')
+            ->value('total') ?? 0;
+    }
+
+    /**
+     * Scope pour les plats disponibles
+     */
+    public function scopeDisponible($query)
+    {
+        return $query->where('is_available', true);
+    }
+
+    /**
+     * Scope par catégorie
+     */
+    public function scopeParCategorie($query, $category)
+    {
+        return $query->where('category', $category);
+    }
     
 }
