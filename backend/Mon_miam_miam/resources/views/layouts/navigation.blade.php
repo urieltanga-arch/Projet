@@ -26,12 +26,13 @@
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('loyalty.simple') ? 'text-yellow-500' : '' }}">
                     Fidélité
                 </a>
+
+                <a href="{{ route('historique.index') }}" 
+                   class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('historique.index') ? 'text-yellow-500' : '' }}">
+                    Historique
+                </a>
                 
-                @if(Route::has('historique.index'))
-                    <a href="{{ route('historique.index') }}" class="nav-link">Historique</a>
-                @else
-                    <a href="#" class="nav-link text-muted">Historique (bientôt)</a>
-                @endif
+                
                 
                 <a href="{{ route('games.index') }}" 
                    class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('games.index') ? 'text-yellow-500' : '' }}">

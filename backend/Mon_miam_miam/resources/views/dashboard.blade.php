@@ -68,43 +68,47 @@
         Plats Disponibles
     </h3>
     <div class="space-y-4">
-        @if(isset($plats) && $plats->count() > 0)
-            @foreach($plats as $plat)
-                <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
-                            @if(isset($plat->image_url) && $plat->image_url)
-                                <img 
-                                    src="{{ $plat->image_url }}" 
-                                    alt="{{ $plat->name }}"
-                                    class="w-full h-full object-cover"
-                                    onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-3xl\'>🍽️</span>';"
-                                >
-                            @else
-                                <span class="text-3xl">🍽️</span>
-                            @endif
-                        </div>
-                        
-                        <div class="flex-1">
-                            <h4 class="text-lg font-semibold text-gray-800">{{ $plat->name }}</h4>
-                            <p class="text-sm text-gray-600 mt-1">{{ $plat->description ?? 'Description non disponible' }}</p>
-                            <div class="flex items-center space-x-4 mt-2">
-                                <span class="text-green-600 font-bold">{{ number_format($plat->price ?? 0, 2) }} €</span>
-                                <span class="text-blue-600 font-semibold">{{ $plat->points ?? 0 }} points</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-3">
-                        <button 
-                            onclick="commanderPlat({{ $plat->id }})"
-                            class="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
+        @if(!empty($plats) && count($plats) > 0)
+    @foreach($plats as $plat)
+        <div class="bg-gradient-to-br from-amber-50 to-amber-100 rounded-2xl p-4 flex items-center justify-between hover:shadow-md transition-shadow">
+            <div class="flex items-center space-x-4">
+                <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm overflow-hidden">
+                    @if(!empty($plat->image_url))
+                        <img 
+                            src="{{ $plat->image_url }}" 
+                            alt="{{ $plat->name }}"
+                            class="w-full h-full object-cover"
+                            onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\'text-3xl\'>🍽️</span>';"
                         >
-                            Commander
-                        </button>
+                    @else
+                        <span class="text-3xl">🍽️</span>
+                    @endif
+                </div>
+                
+                <div class="flex-1">
+                    <h4 class="text-lg font-semibold text-gray-800">{{ $plat->name }}</h4>
+                    @if($plat->description)
+                        <p class="text-sm text-gray-600 mt-1">{{ $plat->description }}</p>
+                    @endif
+                    <div class="flex items-center space-x-4 mt-2">
+                        <span class="text-green-600 font-bold">{{ number_format($plat->price, 0, ',', ' ') }} FCFA</span>
+                        @if($plat->points > 0)
+                            <span class="text-blue-600 font-semibold">+{{ $plat->points }} pts</span>
+                        @endif
                     </div>
                 </div>
-            @endforeach
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button 
+                    onclick="commanderPlat({{ $plat->id }})"
+                    class="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black px-6 py-2 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
+                >
+                    Commander
+                </button>
+            </div>
+        </div>
+    @endforeach
         @else
             <div class="text-center py-8">
                 <div class="text-6xl mb-4">🍽️</div>
@@ -207,24 +211,28 @@
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-black text-white mt-20">
-        <div class="container mx-auto px-4 py-8">
-            <div class="flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0">
-                <div class="text-gray-400 text-sm">
-                    Order.cm ©Copyright {{ date('Y') }}, All Rights Reserved.
+     <!-- Footer -->
+    <footer id="contact" class="bg-black text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">Zeduc-SP@CE</h3>
+                    <p class="text-gray-400">Restaurant & Terrasse avec vue sur la Dizimba</p>
                 </div>
-                <div class="flex items-center space-x-6">
-                    <a href="#privacy" class="text-gray-400 hover:text-white transition-colors text-sm">
-                        Privacy Policy
-                    </a>
-                    <a href="#terms" class="text-gray-400 hover:text-white transition-colors text-sm">
-                        Terms
-                    </a>
-                    <a href="#pricing" class="text-gray-400 hover:text-white transition-colors text-sm">
-                        Pricing
-                    </a>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
+                    <p class="text-gray-400">📍 Yaoundé, Cameroun</p>
+                    <p class="text-gray-400">📞 +237 XXX XXX XXX</p>
+                    <p class="text-gray-400">✉️ contact@zeduc-space.cm</p>
                 </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Horaires</h4>
+                    <p class="text-gray-400">Lun - Ven : 10h - 23h</p>
+                    <p class="text-gray-400">Sam - Dim : 9h - 00h</p>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 Zeduc-SP@CE. Tous droits réservés.</p>
             </div>
         </div>
     </footer>

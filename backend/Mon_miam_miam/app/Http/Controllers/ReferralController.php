@@ -47,9 +47,7 @@ class ReferralController extends Controller
      */
     private function generateReferralCode(User $user): string
     {
-        // Méthode 1 : Basée sur le nom/email
-        $baseName = Str::upper(Str::ascii(explode('@', $user->email)[0]));
-        $baseCode = $baseName . '2025';
+        
         
         // Méthode 2 : Code aléatoire (alternative)
         // $baseCode = Str::upper(Str::random(8));

@@ -94,7 +94,7 @@
                                     <ul class="space-y-1 mb-3">
                                         @foreach($commande->items as $item)
                                             <li class="text-gray-700">
-                                                • {{ $item->quantity }} {{ $item->plat->nom ?? 'Plat' }}
+                                                • {{ $item->quantity }} {{ $item->plat->name ?? 'Plat' }}
                                             </li>
                                         @endforeach
                                     </ul>
@@ -115,7 +115,7 @@
                                                                <div class="flex justify-between items-center py-2 border-b">
                                 <div>
                                     <p class="font-semibold">{{ $item['name'] }}</p>
-                                    <p class="font-bold text-yellow-600">{{ number_format($item['sous_total'], 0, ',', ' ') }} FCFA</p>
+                                    <p class="font-bold text-yellow-600">{{ number_format($commandes['mantant_total'], 0, ',', ' ') }} FCFA</p>
                                 </div>
                                 
                             </div>

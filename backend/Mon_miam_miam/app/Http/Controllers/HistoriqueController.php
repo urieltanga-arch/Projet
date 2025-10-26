@@ -61,6 +61,7 @@ class HistoriqueController extends Controller
         $commande = Commande::with(['items.plat'])
             ->where('user_id', auth()->id())
             ->findOrFail($id);
+            
         
         return view('historique.show', compact('commande'));
     }
