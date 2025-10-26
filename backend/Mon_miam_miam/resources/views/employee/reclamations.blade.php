@@ -120,7 +120,7 @@
                             <div class="mb-3">
                                 @if($reclamation->commande)
                                 <p class="text-sm text-gray-600">
-                                    <span class="font-semibold">Commande #{{ $reclamation->commande->numero_commande }}</span>
+                                    <span class="font-semibold">Commande {{ $reclamation->commande->numero_commande }}</span>
                                 </p>
                                 @endif
                                 <p class="text-sm text-gray-600">{{ $reclamation->temps_ecoule }}</p>

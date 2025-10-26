@@ -34,8 +34,8 @@
                 
                 
                 
-                <a href="{{ route('games.index') }}" 
-                   class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('games.index') ? 'text-yellow-500' : '' }}">
+                <a href="{{ route('minijeux.index') }}" 
+                   class="text-white hover:text-yellow-500 px-3 py-2 text-lg font-medium transition-colors {{ request()->routeIs('minijeux.index') ? 'text-yellow-500' : '' }}">
                     Jeux
                 </a>
                 
@@ -159,7 +159,7 @@
                     Historique
                 </a>
             @endif
-            <a href="{{ route('games.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('games.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
+            <a href="{{ route('minijeux.index') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('minijeux.index') ? 'bg-gray-800 text-yellow-500' : '' }}">
                 Jeux
             </a>
             <a href="{{ route('top-clients') }}" class="block text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">

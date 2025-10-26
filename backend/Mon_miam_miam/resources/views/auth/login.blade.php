@@ -259,24 +259,8 @@
             </div>
         </main>
 
-        <!-- FOOTER -->
-        <footer class="mt-auto pt-8 pb-6">
-            <div class="max-w-4xl mx-auto px-4">
-                <div class="border-t border-gray-300 mb-6"></div>
-                <div class="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-600">
-                    <p>© {{ date('Y') }} Zeduc-sp@ce. Tous droits réservés.</p>
-                    <div class="flex gap-6">
-                        <a href="#" class="hover:text-amber-600 transition-colors">
-                            Conditions d'utilisation
-                        </a>
-                        <a href="#" class="hover:text-amber-600 transition-colors">
-                            Politique de confidentialité
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </footer>
-    </div>
+                <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
+
 
     <script>
         let currentMode = 'login';
@@ -406,5 +390,6 @@
             @endif
         });
     </script>
+
 </body>
 </html>

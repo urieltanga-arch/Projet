@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <x-admin-app-layout>
-<body class="bg-[#f5e6d3] font-sans">
+<body class="bg-[#ebaf61] font-sans">
     
     {{-- CORRECTION : Ajout des classes de style au header --}}
     <header class="bg-yellow-500 shadow-md">
@@ -265,6 +265,7 @@
             }
         });
     </script>
+    <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
 </body>
 </html>
 </x-admin-app-layout>

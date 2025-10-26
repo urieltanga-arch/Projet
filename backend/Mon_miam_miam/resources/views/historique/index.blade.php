@@ -112,7 +112,7 @@
 
                                 <!-- Montant et Action -->
                                 <div class="flex flex-col items-end gap-3">
-                                                               <div class="flex justify-between items-center py-2 border-b">
+                                    <div class="flex justify-between items-center py-2 border-b">
                                 <div>
                                     <p class="font-semibold">{{ $item['name'] }}</p>
                                     <p class="font-bold text-yellow-600">{{ number_format($commandes['mantant_total'], 0, ',', ' ') }} FCFA</p>

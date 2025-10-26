@@ -56,9 +56,9 @@
                 <!-- Logo -->
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center">
-                        <span class="text-black font-bold text-xl">Z</span>
+                         <x-application-logo class="block h-12 w-auto fill-current text-yellow-500" />
                     </div>
-                    <span class="ml-3 text-white text-lg font-semibold">Zeduc-SP@CE</span>
+                    <span class="ml-3 text-white text-lg font-semibold"></span>
                 </div>
                 
                 <!-- Menu Desktop -->
@@ -302,31 +302,9 @@
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer id="contact" class="bg-black text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-2xl font-bold mb-4">Zeduc-SP@CE</h3>
-                    <p class="text-gray-400">Restaurant & Terrasse avec vue sur la Dizimba</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Contact</h4>
-                    <p class="text-gray-400">📍 Yaoundé, Cameroun</p>
-                    <p class="text-gray-400">📞 +237 XXX XXX XXX</p>
-                    <p class="text-gray-400">✉️ contact@zeduc-space.cm</p>
-                </div>
-                <div>
-                    <h4 class="text-lg font-semibold mb-4">Horaires</h4>
-                    <p class="text-gray-400">Lun - Ven : 10h - 23h</p>
-                    <p class="text-gray-400">Sam - Dim : 9h - 00h</p>
-                </div>
-            </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-                <p>&copy; 2024 Zeduc-SP@CE. Tous droits réservés.</p>
-            </div>
-        </div>
-    </footer>
+
+                   
+        <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
 
     <!-- Toast notification -->
     @auth

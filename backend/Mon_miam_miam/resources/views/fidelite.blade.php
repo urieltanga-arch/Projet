@@ -66,4 +66,6 @@
             alert('Code copié : ' + code);
         }
     </script>
+            <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
+
 </x-app-layout>
