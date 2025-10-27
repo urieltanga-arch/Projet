@@ -11,12 +11,9 @@
         <!-- HEADER -->
         <header class="flex items-center justify-between px-8 py-4 bg-black shadow-md">
             <div class="flex items-center">
-                <img
-                    src="{{ asset('image 11.svg') }}"
-                    alt="Zeduc Logo"
-                    class="h-10 w-auto"
-                    onerror="this.style.display='none'; this.parentElement.innerHTML='<span class=\'text-amber-500 text-2xl font-bold\'>Zeduc-sp@ce</span>';"
-                />
+                
+                    <x-application-logo class="block h-12 w-auto fill-current text-yellow-500" />
+                  
             </div>
 
             <button

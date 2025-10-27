@@ -1,4 +1,4 @@
-<x-employee-app-layout>
+<x-admin-app-layout>
     <div class="py-12 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
         <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
             
@@ -161,4 +161,4 @@
 
         </div>
     </div>
-</x-employee-app-layout>
+</x-admin-app-layout>

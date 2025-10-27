@@ -184,7 +184,7 @@ class CartController extends Controller
     
     return response()->json([
         'success' => true,
-        'message' => 'Commande passée avec succès ! Vous avez gagné ' . $totalPoints . ' points de fidélité.',
+        'message' => 'Commande passée avec succès ! Vous avez gagné 1 points de fidélité.',
         'commande_id' => $commande->id
     ]);
 

@@ -21,8 +21,8 @@
                     Employé
                 </a>
                 
-                <a href="{{ route('employee.menu.index') }}" 
-                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('employee.menu.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                <a href="{{ route('admin.menu.index') }}" 
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('admin.menu.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                     Menu
                 </a>
                 
@@ -31,7 +31,7 @@
                     Promotion
                 </a>
                 
-                <a href="{{ route('admin.statistiques') }}" 
+                <a href="{{ route('admin.dashboard') }}" 
                    class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                     Statistiques
                 </a>
@@ -131,8 +131,8 @@
                 Employé
             </a>
             
-            <a href="{{ route('employee.menu.index') }}" 
-               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('employee.menu.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+            <a href="{{ route('admin.menu.index') }}" 
+               class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('admin.menu.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                 Menu
             </a>
             

@@ -115,6 +115,22 @@ Route::middleware(['auth'])->group(function () {
     
     // API Points
     Route::get('/user/points', [MiniJeuxController::class, 'getUserPoints'])->name('user.points');
+
+     Route::get('/roue-fortune', function() {
+        return view('minijeux.roue-fortune');
+    })->name('roue.fortune');
+    
+    // API pour tourner la roue (déjà créée dans MiniJeuxController)
+    Route::post('/minijeux/roue/spin', [MiniJeuxController::class, 'spinRoue'])->name('minijeux.roue.spin');
+
+    // Quiz Cuisine
+    Route::get('/quiz-cuisine', function() {
+        return view('minijeux.quiz-cuisine');
+    })->name('quiz.cuisine');
+    
+    // API pour terminer le quiz (déjà créée dans MiniJeuxController)
+    Route::post('/minijeux/quiz/finish', [MiniJeuxController::class, 'finishQuiz'])->name('minijeux.quiz.finish');
+
 });
 
 // ============================================
@@ -274,6 +290,16 @@ Route::middleware(['auth', 'role:admin,manager,student'])->prefix('admin')->name
     
     // Statistiques
     Route::get('/statistiques', [StatistiquesController::class, 'index'])->name('statistiques');
+
+    //Menu
+    Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');
+    Route::get('/menu/create', [App\Http\Controllers\Employee\MenuController::class, 'create'])->name('menu.create');
+    Route::post('/menu', [App\Http\Controllers\Employee\MenuController::class, 'store'])->name('menu.store');
+    Route::get('/menu/{plat}/edit', [App\Http\Controllers\Employee\MenuController::class, 'edit'])->name('menu.edit');
+    Route::put('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'update'])->name('menu.update');
+    Route::delete('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'destroy'])->name('menu.destroy');
+    Route::patch('/menu/{plat}/toggle', [App\Http\Controllers\Employee\MenuController::class, 'toggleAvailability'])->name('menu.toggle');
+    
 });
 
 // ============================================
