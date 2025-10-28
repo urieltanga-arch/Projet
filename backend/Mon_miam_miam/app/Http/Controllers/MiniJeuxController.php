@@ -50,8 +50,8 @@ class MiniJeuxController extends Controller
         $user->total_points -= $cost;
         $user->save();
         
-        // Segments de la roue (12 segments)
-        $segments = [0, 15, 30, 45, 60, 75, 0, 15, 30, 45, 60, 75];
+        // Segments de la roue (12 segments) - 
+        $segments = [0, 3, 6, 9, 12, 15, 0, 3, 6, 9, 12, 15];
         
         // Choisir un segment aléatoire
         $winningSegment = rand(0, count($segments) - 1);
@@ -72,6 +72,32 @@ class MiniJeuxController extends Controller
     }
     
     /**
+     * Démarrer le quiz (déduire le coût)
+     */
+    public function startQuiz(Request $request)
+    {
+        $user = Auth::user();
+        $cost = 20;
+        
+        // Vérifier si l'utilisateur a assez de points
+        if ($user->total_points < $cost) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Points insuffisants'
+            ], 400);
+        }
+        
+        // Déduire le coût
+        $user->total_points -= $cost;
+        $user->save();
+        
+        return response()->json([
+            'success' => true,
+            'new_points' => $user->total_points
+        ]);
+    }
+    
+    /**
      * Terminer le quiz
      */
     public function finishQuiz(Request $request)
@@ -79,8 +105,8 @@ class MiniJeuxController extends Controller
         $user = Auth::user();
         $score = $request->input('score', 0);
         
-        // Calculer les points gagnés (20 points par bonne réponse, max 100)
-        $pointsGagnes = min($score, 100);
+        // Calculer les points gagnés (2 points par bonne réponse, max 20)
+        $pointsGagnes = min($score, 20);
         
         if ($pointsGagnes > 0) {
             $user->total_points += $pointsGagnes;

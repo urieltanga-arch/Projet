@@ -16,7 +16,6 @@ use App\Http\Controllers\Admin\StatistiquesController;
 use App\Http\Controllers\Gerant\DashboardGerantController;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\MiniJeuxController;
-
 // ============================================
 // ROUTES PUBLIQUES (sans authentification)
 // ============================================
@@ -38,7 +37,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
     // Menu
-    Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+    Route::get('/menu', [MenuController::class, 'index'])->name('menu')->middleware('plat.available');
     
     // Points de fidélité
     Route::get('/mes-points', function() {
@@ -84,7 +83,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Panier
     Route::get('/panier', [App\Http\Controllers\Employee\CartController::class, 'index'])->name('cart.index');
-    Route::post('/panier/add/{plat}', [App\Http\Controllers\Employee\CartController::class, 'add'])->name('cart.add');
+    Route::post('/panier/add/{plat}', [App\Http\Controllers\Employee\CartController::class, 'add'])->name('cart.add')->middleware('plat.available');
     Route::delete('/panier/remove/{plat}', [App\Http\Controllers\Employee\CartController::class, 'remove'])->name('cart.remove');
     Route::patch('/panier/update/{plat}', [App\Http\Controllers\Employee\CartController::class, 'updateQuantity'])->name('cart.update');
     Route::post('/panier/clear', [App\Http\Controllers\Employee\CartController::class, 'clear'])->name('cart.clear');
@@ -99,38 +98,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // ============================================
 // ROUTES POUR LES JEUX (tous les utilisateurs authentifiés)
 // ============================================
+// Routes Mini-Jeux (protégées par authentification)
 Route::middleware(['auth'])->group(function () {
     
-    // Page Mini-Jeux
+    // Page principale des mini-jeux
     Route::get('/minijeux', [MiniJeuxController::class, 'index'])->name('minijeux.index');
     
     // Roue de Fortune
+    
     Route::post('/minijeux/roue/spin', [MiniJeuxController::class, 'spinRoue'])->name('minijeux.roue.spin');
     
     // Quiz Cuisine
+    Route::post('/minijeux/quiz/start', [MiniJeuxController::class, 'startQuiz'])->name('minijeux.quiz.start');
     Route::post('/minijeux/quiz/finish', [MiniJeuxController::class, 'finishQuiz'])->name('minijeux.quiz.finish');
     
     // Événements
     Route::post('/events/{id}/participate', [MiniJeuxController::class, 'participateEvent'])->name('events.participate');
     
-    // API Points
+
+    Route::post('/minijeux/quiz/start', [MiniJeuxController::class, 'startQuiz'])->name('minijeux.quiz.start');
+
+    // API - Points utilisateur
     Route::get('/user/points', [MiniJeuxController::class, 'getUserPoints'])->name('user.points');
-
-     Route::get('/roue-fortune', function() {
-        return view('minijeux.roue-fortune');
-    })->name('roue.fortune');
-    
-    // API pour tourner la roue (déjà créée dans MiniJeuxController)
-    Route::post('/minijeux/roue/spin', [MiniJeuxController::class, 'spinRoue'])->name('minijeux.roue.spin');
-
-    // Quiz Cuisine
-    Route::get('/quiz-cuisine', function() {
-        return view('minijeux.quiz-cuisine');
-    })->name('quiz.cuisine');
-    
-    // API pour terminer le quiz (déjà créée dans MiniJeuxController)
-    Route::post('/minijeux/quiz/finish', [MiniJeuxController::class, 'finishQuiz'])->name('minijeux.quiz.finish');
-
 });
 
 // ============================================
@@ -138,8 +127,8 @@ Route::middleware(['auth'])->group(function () {
 // ============================================
 Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/menu', [MenuController::class, 'index'])->name('menu');
-    Route::get('/menu/{id}', [MenuController::class, 'show'])->name('menu.show');
+    Route::get('/menu', [MenuController::class, 'index'])->name('menu')->middleware('plat.available');
+    Route::get('/menu/{id}', [MenuController::class, 'show'])->name('menu.show')->middleware('plat.available');
     
     Route::get('/mes-points', function() {
         $user = auth()->user();
@@ -151,7 +140,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
 // ============================================
 // ROUTES EMPLOYEES
 // ============================================
-Route::middleware(['auth', 'role:employee'])->prefix('employee')->name('employee.')->group(function () {
+Route::middleware(['auth', 'role:employee,admin'])->prefix('employee')->name('employee.')->group(function () {
     
     // Dashboard
     Route::get('/dashboard', function() {

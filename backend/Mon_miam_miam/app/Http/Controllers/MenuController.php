@@ -20,7 +20,7 @@ class MenuController extends Controller
 
     public function show($id)
     {
-        $plat = Plat::findOrFail($id);
+        $plat = Plat::where('is_available', true)->findOrFail($id);
         return view('menu.show', compact('plat'));
     }
 }

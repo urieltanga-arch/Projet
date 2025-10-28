@@ -97,7 +97,7 @@
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors">
-                                Log Out
+                                Deconnexion
                             </button>
                         </form>
                     </div>
@@ -186,7 +186,7 @@
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit" class="w-full text-left text-white hover:text-yellow-500 px-3 py-2 text-base font-medium rounded-lg">
-                        Log Out
+                        Deconnexion
                     </button>
                 </form>
             </div>

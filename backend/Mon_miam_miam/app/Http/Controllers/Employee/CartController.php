@@ -29,7 +29,15 @@ class CartController extends Controller
      */
     public function add(Request $request, $platId)
     {
-        $plat = Plat::findOrFail($platId);
+        $plat = Plat::where('is_available', true)->findOrFail($platId);
+        
+        // Vérifier que le plat est disponible
+        if (!$plat->is_available) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Ce plat n\'est plus disponible'
+            ], 400);
+        }
         
         $cart = session()->get('cart', []);
         

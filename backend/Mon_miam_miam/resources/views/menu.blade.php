@@ -146,6 +146,20 @@
                     
                     // Afficher le toast
                     showToast(data.message);
+                } else {
+                    // Afficher l'erreur
+                    showToast(data.message, 'error');
+                    
+                    // Optionnel: masquer le plat du menu s'il n'est plus disponible
+                    const platCard = document.querySelector(`[onclick="addToCart(${platId})"]`).closest('.plat-card');
+                    if (platCard) {
+                        platCard.style.opacity = '0.5';
+                        platCard.style.pointerEvents = 'none';
+                        const button = platCard.querySelector('button');
+                        button.textContent = 'Indisponible';
+                        button.classList.remove('bg-black', 'hover:bg-gray-800');
+                        button.classList.add('bg-gray-400', 'cursor-not-allowed');
+                    }
                 }
             })
             .catch(error => {

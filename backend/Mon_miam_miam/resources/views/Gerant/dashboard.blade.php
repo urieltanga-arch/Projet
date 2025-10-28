@@ -621,9 +621,8 @@
         
     </div>
 
-    <div class="footer">
-        <p>Order.cm ©Copyright 2025, All Rights Reserved. | Privacy Policy | Terms | Pricing | Do not share your personal information</p>
-    </div>
+ <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
+
 
     <script>
         // Graphique de performances

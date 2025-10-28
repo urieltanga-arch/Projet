@@ -33,24 +33,24 @@
                     
                     <!-- ONGLETS -->
                     <div class="bg-white rounded-2xl p-2 mb-6 shadow-sm">
-                        <div class="flex gap-2">
-                            <button
-                                onclick="switchTab('login')"
-                                id="tab-login"
-                                class="flex-1 py-3 px-6 rounded-xl font-semibold text-lg transition-all text-center bg-gradient-to-r from-yellow-500 to-amber-500 text-black shadow-md"
-                            >
-                                Connexion
-                            </button>
-                            
-                            <button
-                                onclick="switchTab('register')"
-                                id="tab-register"
-                                class="flex-1 py-3 px-6 rounded-xl font-semibold text-lg transition-all text-center text-gray-600 hover:text-gray-800"
-                            >
-                                Inscription
-                            </button>
-                        </div>
-                    </div>
+    <div class="flex gap-2">
+        <button
+            onclick="switchTab('login')"
+            id="tab-login"
+            class="w-1/2 py-3 px-6 rounded-xl font-semibold text-lg transition-all text-center bg-gradient-to-r from-yellow-500 to-amber-500 text-black shadow-md"
+        >
+            Connexion
+        </button>
+        
+        <button
+            onclick="switchTab('register')"
+            id="tab-register"
+            class="w-1/2 py-3 px-6 rounded-xl font-semibold text-lg transition-all text-center text-gray-600 hover:text-gray-800"
+        >
+            Inscription
+        </button>
+    </div>
+</div>
 
                     <!-- FORMULAIRE UNIFIÉ -->
                     <div class="bg-white shadow-lg rounded-2xl p-10 border border-amber-100" style="min-height: 600px;">

@@ -25,27 +25,28 @@
             <h2 class="text-4xl font-bold text-gray-900 mb-8">Mini-jeux Disponible</h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Roue de Fortune -->
+                <!-- Roue de Fortune -->
                 <div class="bg-gradient-to-br from-amber-400 to-yellow-500 rounded-3xl shadow-xl p-8 text-center hover:scale-105 transition-transform">
                     <div class="text-7xl mb-4">🎲</div>
-                        <h3 class="text-2xl font-bold text-white mb-2">Roue de Fortune</h3>
-                        <p class="text-gray-800 font-semibold mb-4">+ 15-75 pts</p>
-                        <button onclick="window.location.href='{{ route('roue.fortune') }}'" 
-                                class="w-full bg-black text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition">
-                            JOUEZ MAINTENANT
-                            </button>
-                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Roue de Fortune</h3>
+                    <p class="text-gray-800 font-semibold mb-1">Coût: 10 pts</p>
+                    <p class="text-white font-bold mb-4">Gain: 0-15 pts</p>
+                    <button onclick="openRoueModal()"class="w-full bg-black text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition">
+                        JOUEZ MAINTENANT
+                    </button>
+                </div>
 
                 <!-- Quiz Cuisine -->
-<div class="bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-xl p-8 text-center hover:scale-105 transition-transform">
-    <div class="text-7xl mb-4">🧩</div>
-    <h3 class="text-2xl font-bold text-white mb-2">Quiz Cuisine</h3>
-    <p class="text-amber-400 font-semibold mb-4">+ 100 pts</p>
-    <a href="{{ route('quiz.cuisine') }}" 
-       class="block w-full bg-amber-400 text-black px-6 py-3 rounded-xl font-bold hover:bg-amber-500 transition">
-        JOUEZ MAINTENANT
-    </a>
-</div>
+                <div class="bg-gradient-to-br from-gray-900 to-black rounded-3xl shadow-xl p-8 text-center hover:scale-105 transition-transform">
+                    <div class="text-7xl mb-4">🧩</div>
+                    <h3 class="text-2xl font-bold text-white mb-2">Quiz Cuisine</h3>
+                    <p class="text-amber-400 font-semibold mb-1">Coût: 20 pts</p>
+                    <p class="text-white font-bold mb-4">Gain: max 20 pts</p>
+                    <button onclick="openQuizModal()" 
+                    class="w-full bg-amber-400 text-black px-6 py-3 rounded-xl font-bold hover:bg-amber-500 transition">
+                        JOUEZ MAINTENANT
+                    </button>
+                </div>
 
                 <!-- Défi Quotidien -->
                 <div class="bg-white rounded-3xl shadow-xl p-8 text-center hover:scale-105 transition-transform border-4 border-gray-200">

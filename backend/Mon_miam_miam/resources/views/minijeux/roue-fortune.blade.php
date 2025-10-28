@@ -179,20 +179,20 @@
         let gainTotal = 0;
         let historique = [];
 
-        // Configuration des segments (12 segments)
+        // Configuration des segments (12 segments) - Gains réduits de 80%
         const segments = [
             {value: 0, color: '#EF4444', label: '0'},     // Rouge
-            {value: 15, color: '#F59E0B', label: '15'},   // Orange
-            {value: 30, color: '#10B981', label: '30'},   // Vert
-            {value: 45, color: '#3B82F6', label: '45'},   // Bleu
-            {value: 60, color: '#8B5CF6', label: '60'},   // Violet
-            {value: 75, color: '#EC4899', label: '75'},   // Rose
+            {value: 3, color: '#F59E0B', label: '3'},     // Orange
+            {value: 6, color: '#10B981', label: '6'},     // Vert
+            {value: 9, color: '#3B82F6', label: '9'},     // Bleu
+            {value: 12, color: '#8B5CF6', label: '12'},   // Violet
+            {value: 15, color: '#EC4899', label: '15'},   // Rose
             {value: 0, color: '#EF4444', label: '0'},     // Rouge
-            {value: 15, color: '#F59E0B', label: '15'},   // Orange
-            {value: 30, color: '#10B981', label: '30'},   // Vert
-            {value: 45, color: '#3B82F6', label: '45'},   // Bleu
-            {value: 60, color: '#8B5CF6', label: '60'},   // Violet
-            {value: 75, color: '#EC4899', label: '75'}    // Rose
+            {value: 3, color: '#F59E0B', label: '3'},     // Orange
+            {value: 6, color: '#10B981', label: '6'},     // Vert
+            {value: 9, color: '#3B82F6', label: '9'},     // Bleu
+            {value: 12, color: '#8B5CF6', label: '12'},   // Violet
+            {value: 15, color: '#EC4899', label: '15'}    // Rose
         ];
 
         const canvas = document.getElementById('roueCanvas');

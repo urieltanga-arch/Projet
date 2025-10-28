@@ -66,6 +66,11 @@
             <h1 class="text-6xl font-bold mb-4 bounce-animation">🧩 Quiz Cuisine Africaine</h1>
             <p class="text-2xl text-gray-300 mb-6">Testez vos connaissances sur la cuisine camerounaise et africaine</p>
             
+            <!-- Coût du quiz -->
+            <div class="inline-block bg-red-500 text-white px-8 py-3 rounded-2xl mb-6">
+                <p class="text-xl font-bold">⚠️ Coût: 20 points pour jouer</p>
+            </div>
+            
             <!-- Stats -->
             <div class="flex justify-center gap-6 mb-8">
                 <div class="bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl shadow-xl px-8 py-4">
