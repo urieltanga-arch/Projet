@@ -88,7 +88,7 @@
             <div class="bg-white rounded-3xl shadow-2xl p-8 mb-8">
                 <div class="text-center mb-6">
                     <p class="text-2xl font-bold text-gray-900 mb-2">Coût par tour: <span class="text-red-600">10 points</span></p>
-                    <p class="text-gray-600">Gains possibles: 0, 15, 30, 45, 60, 75 points</p>
+                    <p class="text-gray-600">Gains possibles: 0, 3, 6, 9, 12, 15 points</p>
                 </div>
                 
                 <div class="relative flex justify-center items-center" style="height: 500px;">
@@ -120,23 +120,23 @@
                         <p class="text-sm">Perdu</p>
                     </div>
                     <div class="text-center p-4 rounded-xl bg-orange-500 text-white">
-                        <p class="text-3xl font-bold">15</p>
+                        <p class="text-3xl font-bold">3</p>
                         <p class="text-sm">pts</p>
                     </div>
                     <div class="text-center p-4 rounded-xl bg-green-500 text-white">
-                        <p class="text-3xl font-bold">30</p>
+                        <p class="text-3xl font-bold">6</p>
                         <p class="text-sm">pts</p>
                     </div>
                     <div class="text-center p-4 rounded-xl bg-blue-500 text-white">
-                        <p class="text-3xl font-bold">45</p>
+                        <p class="text-3xl font-bold">9</p>
                         <p class="text-sm">pts</p>
                     </div>
                     <div class="text-center p-4 rounded-xl bg-purple-500 text-white">
-                        <p class="text-3xl font-bold">60</p>
+                        <p class="text-3xl font-bold">12</p>
                         <p class="text-sm">pts</p>
                     </div>
                     <div class="text-center p-4 rounded-xl bg-pink-500 text-white">
-                        <p class="text-3xl font-bold">75</p>
+                        <p class="text-3xl font-bold">15</p>
                         <p class="text-sm">pts</p>
                     </div>
                 </div>
@@ -272,9 +272,9 @@
                 
                 if (data.success) {
                     await animerRoue(data.segment, data.points);
-                    afficherResultat(data.points, data.total_points);
+                    afficherResultat(data.points, data.total_points, data.reduced);
                     mettreAJourStats(data.points);
-                    ajouterHistorique(data.points);
+                    ajouterHistorique(data.points, data.reduced);
                 } else {
                     alert('❌ ' + data.message);
                     isSpinning = false;
@@ -336,7 +336,7 @@
         }
 
         // Afficher le résultat
-        function afficherResultat(points, nouveauSolde) {
+        function afficherResultat(points, nouveauSolde, estReduit = false) {
             const modal = document.getElementById('resultModal');
             const icon = document.getElementById('resultIcon');
             const title = document.getElementById('resultTitle');
@@ -350,15 +350,15 @@
             } else if (points <= 30) {
                 icon.textContent = '😊';
                 title.textContent = 'Bien joué !';
-                message.textContent = `Vous avez gagné ${points} points !`;
+                message.textContent = `Vous avez gagné ${points} points ! ${estReduit ? '(Réduit de 80%)' : ''}`;
             } else if (points <= 60) {
                 icon.textContent = '🎉';
                 title.textContent = 'Excellent !';
-                message.textContent = `Vous avez gagné ${points} points !`;
+                message.textContent = `Vous avez gagné ${points} points ! ${estReduit ? '(Réduit de 80%)' : ''}`;
             } else {
                 icon.textContent = '🏆';
                 title.textContent = 'JACKPOT !';
-                message.textContent = `Incroyable ! ${points} points !`;
+                message.textContent = `Incroyable ! ${points} points ! ${estReduit ? '(Réduit de 80%)' : ''}`;
             }
             
             balance.textContent = nouveauSolde + ' pts';
@@ -406,14 +406,14 @@
         }
 
         // Ajouter à l'historique
-        function ajouterHistorique(points) {
-            historique.unshift(points);
+        function ajouterHistorique(points, estReduit = false) {
+            historique.unshift({ points, estReduit });
             if (historique.length > 10) historique.pop();
             
             const historiqueDiv = document.getElementById('historique');
-            historiqueDiv.innerHTML = historique.map(p => {
-                const couleur = p === 0 ? 'bg-red-500' : p <= 30 ? 'bg-orange-500' : p <= 60 ? 'bg-green-500' : 'bg-purple-500';
-                return `<span class="${couleur} text-white px-4 py-2 rounded-lg font-bold">${p}</span>`;
+            historiqueDiv.innerHTML = historique.map(h => {
+                const couleur = h.points === 0 ? 'bg-red-500' : h.points <= 30 ? 'bg-orange-500' : h.points <= 60 ? 'bg-green-500' : 'bg-purple-500';
+                return `<span class="${couleur} text-white px-4 py-2 rounded-lg font-bold">${h.points}${h.estReduit ? ' 🔻' : ''}</span>`;
             }).join('');
         }
 

@@ -28,6 +28,32 @@ class ReclamationController extends Controller
             'enAttenteCount',
             'traitesCount'
         ));
+        $periode = $request->get('periode', 'jour');
+        
+        // Filtrer par période
+        $dateDebut = match($periode) {
+            'jour' => Carbon::today(),
+            'semaine' => Carbon::now()->startOfWeek(),
+            'mois' => Carbon::now()->startOfMonth(),
+        };
+        
+        $reclamations = Reclamation::with(['user'])
+            ->where('created_at', '>=', $dateDebut)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        $stats = [
+            'total' => $reclamations->count(),
+            'en_attente' => $reclamations->where('status', 'pending')->count(),
+            'en_traitement' => $reclamations->where('status', 'in_progress')->count(),
+            'traitees' => $reclamations->where('status', 'resolved')->count(),
+            'resolues' => Reclamation::where('status', 'resolved')
+                ->whereMonth('created_at', now()->month)
+                ->count(),
+        ];
+        
+        return view('gerant.reclamations.index', compact('reclamations', 'stats', 'periode'));
+    
     }
 
     /**
@@ -47,6 +73,33 @@ class ReclamationController extends Controller
             'created_at' => $reclamation->created_at,
             'updated_at' => $reclamation->updated_at,
         ]);
+         $periode = $request->get('periode', 'jour');
+    
+    // Filtrer par période
+    $dateDebut = match($periode) {
+        'jour' => now()->startOfDay(),
+        'semaine' => now()->startOfWeek(),
+        'mois' => now()->startOfMonth(),
+    };
+    
+    $reclamations = Reclamation::with(['client', 'employe'])
+        ->where('created_at', '>=', $dateDebut)
+        ->orderBy('priorite', 'desc')
+        ->orderBy('created_at', 'desc')
+        ->get();
+    
+    $stats = [
+        'total' => $reclamations->count(),
+        'en_attente' => $reclamations->where('statut', 'en_attente')->count(),
+        'en_traitement' => $reclamations->where('statut', 'en_traitement')->count(),
+        'traitees' => $reclamations->where('statut', 'traitee')->count(),
+        'resolues' => Reclamation::where('statut', 'resolue')
+            ->whereMonth('created_at', now()->month)
+            ->count(),
+    ];
+    
+    return view('admin.reclamations.index', compact('reclamations', 'stats', 'periode'));
+
     }
 
     /**
@@ -98,5 +151,31 @@ class ReclamationController extends Controller
             'fermee' => 'Fermée',
             default => $statut
         };
+    }
+
+
+
+ 
+
+    public function valider($id)
+    {
+        $reclamation = Reclamation::findOrFail($id);
+        $reclamation->update(['status' => 'in_progress']);
+        
+        return redirect()->back()->with('success', 'Réclamation validée');
+    }
+
+    public function resoudre($id)
+    {
+        $reclamation = Reclamation::findOrFail($id);
+        $reclamation->update(['status' => 'resolved']);
+        
+        return redirect()->back()->with('success', 'Réclamation résolue');
+    }
+
+    public function edit($id)
+    {
+        $reclamation = Reclamation::findOrFail($id);
+        return view('gerant.reclamations.edit', compact('reclamation'));
     }
 }

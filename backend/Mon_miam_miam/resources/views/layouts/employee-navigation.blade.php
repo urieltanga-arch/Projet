@@ -35,7 +35,7 @@
                 </a>
                 
                 <a href="{{ route('employee.reclamations') }}" 
-                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('employee.reclamations') ?'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                     Réclamations
                 </a>
                 

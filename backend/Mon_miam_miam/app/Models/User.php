@@ -154,4 +154,10 @@ public function plat(): HasMany // Ou HasOne, BelongsToMany, etc.
         // Par exemple, HasMany (Un utilisateur a plusieurs plats)
         return $this->hasMany(Plat::class);
     }
+
+    public function commandesTraitees()
+{
+    return $this->hasMany(Commande::class, 'employee_id');
 }
+}
+

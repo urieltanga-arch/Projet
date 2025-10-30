@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\StatistiquesController;
 use App\Http\Controllers\Gerant\DashboardGerantController;
 use App\Http\Controllers\ReclamationController;
 use App\Http\Controllers\MiniJeuxController;
+use App\Http\Controllers\GerantController;
+use App\Http\Controllers\Gerant\GerantStatistiquesController;
+use App\Http\Controllers\Gerant\GerantReclamationsController;
 // ============================================
 // ROUTES PUBLIQUES (sans authentification)
 // ============================================
@@ -295,7 +298,48 @@ Route::middleware(['auth', 'role:admin,manager,student'])->prefix('admin')->name
 // ROUTES GERANT (manager)
 // ============================================
 Route::middleware(['auth', 'role:manager'])->prefix('gerant')->name('gerant.')->group(function () {
+    // Dashboard
     Route::get('/dashboard', [DashboardGerantController::class, 'index'])->name('dashboard');
+    
+     // Statistiques - CORRECTION ICI
+        Route::get('/statistiques', [GerantStatistiquesController::class, 'index'])->name('statistiques');
+
+    
+    // Gestion des employés
+    Route::get('/employees', [GerantController::class, 'employees'])->name('employees.index');
+    Route::get('/employees/create', [GerantController::class, 'createEmployee'])->name('employees.create');
+    Route::post('/employees', [GerantController::class, 'storeEmployee'])->name('employees.store');
+    Route::get('/employees/{employee}/edit', [GerantController::class, 'editEmployee'])->name('employees.edit');
+    Route::put('/employees/{employee}', [GerantController::class, 'updateEmployee'])->name('employees.update');
+    Route::delete('/employees/{employee}', [GerantController::class, 'deleteEmployee'])->name('employees.delete');
+
+    // Menu
+    Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');
+    Route::post('/menu', [App\Http\Controllers\Employee\MenuController::class, 'store'])->name('menu.store');
+    Route::get('/menu/create', [App\Http\Controllers\Employee\MenuController::class, 'create'])->name('menu.create');
+    Route::get('/menu/{plat}/edit', [App\Http\Controllers\Employee\MenuController::class, 'edit'])->name('menu.edit');
+    Route::put('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'update'])->name('menu.update');
+    Route::delete('/menu/{plat}', [App\Http\Controllers\Employee\MenuController::class, 'destroy'])->name('menu.destroy');
+    Route::patch('/menu/{plat}/toggle', [App\Http\Controllers\Employee\MenuController::class, 'toggleAvailability'])->name('menu.toggle');
+
+    // Réclamations
+    // Réclamations - CONFIGURATION CORRECTE
+    Route::prefix('reclamations')->name('reclamations.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'index'])->name('index');
+        Route::get('/{id}', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'show'])->name('show');
+        Route::patch('/{id}/valider', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'valider'])->name('valider');
+        Route::patch('/{id}/resoudre', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'resoudre'])->name('resoudre');
+        Route::get('/{id}/edit', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'edit'])->name('edit');
+        Route::patch('/{id}/status', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'updateStatus'])->name('updateStatus');
+        Route::delete('/{id}', [\App\Http\Controllers\Gerant\GerantReclamationsController::class, 'destroy'])->name('destroy');
+    });
+    // Promotions
+    Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
+    Route::get('/promotions/create', [PromotionController::class, 'createPromotion'])->name('promotions.create');
+    Route::post('/promotions', [PromotionController::class, 'storePromotion'])->name('promotions.store');
+    Route::get('/promotions/{promotion}/edit', [PromotionController::class, 'editPromotion'])->name('promotions.edit');
+    Route::put('/promotions/{promotion}', [PromotionController::class, 'updatePromotion'])->name('promotions.update');
+    Route::delete('/promotions/{promotion}', [PromotionController::class, 'destroyPromotion'])->name('promotions.destroy');
 });
 
 // ============================================

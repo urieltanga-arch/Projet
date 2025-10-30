@@ -401,11 +401,10 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 <div class="flex-shrink-0">
-                    <a href="#" class="flex items-center text-white">
-                        <span class="text-2xl mr-2">🍽️</span>
-                        <span class="font-bold text-lg">ZEDUC SPACES</span>
-                    </a>
-                </div>
+                <a href="{{ route('gerant.dashboard') }}" class="flex items-center">
+                    <x-application-logo class="block h-10 w-auto fill-current text-yellow-500" />
+                </a>
+            </div>
                 <div class="hidden md:flex space-x-1">
                     <a href="{{ route('gerant.dashboard') }}"
                        class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('gerant.gerant.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
@@ -415,12 +414,12 @@
                        class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                         Employé
                     </a>
-                    <a href="#"
+                    <a href="{{ route('gerant.statistiques') }}"
                        class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                         Statistiques
                     </a>
-                     <a href="{{ route('admin.reclamations.index') }}"
-   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('admin.reclamations.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+                     <a href="{{ route('gerant.reclamations.index') }}"
+   class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('gerant.reclamations.index') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
     Réclamation
 </a>
                 </div>
@@ -467,8 +466,8 @@
                 <a href="{{ route('gerant.dashboard') }}" class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('gerant.gerant.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">Dashboard</a>
                 <a href="#" class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Employé</a>
                 <a href="#" class="block px-3 py-2 text-base font-medium rounded-lg text-white hover:bg-gray-800">Statistiques</a>
-<a href="{{ route('admin.reclamations.index') }}" 
-   class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('admin.reclamations.*') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
+<a href="{{ route('gerant.reclamations.index') }}" 
+   class="block px-3 py-2 text-base font-medium rounded-lg {{ request()->routeIs('gerant.reclamations.index') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
     Réclamation
 </a>               <div class="border-t border-gray-700 pt-3 mt-3">
                      <div class="flex items-center gap-3 pb-3 mb-3">
@@ -486,6 +485,7 @@
             </div>
         </div>
     </nav>
+
 
 
     <div class="container">
@@ -518,7 +518,7 @@
                     <p>{{ $nombreAlertes }} réclamation(s) nécessite(nt) attention - {{ $alertes->first()->type_probleme }}</p>
                 </div>
             </div>
-            <button class="voir-details-btn" onclick="window.location.href='#'">Voir Détails</button>
+            <button class="voir-details-btn" onclick="window.location.href='{{ route('gerant.reclamations.index') }}'">Voir Détails</button>
         </div>
         @endif
 

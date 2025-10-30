@@ -26,25 +26,18 @@
                     TOUS
                 </button>
                 <button 
-                    onclick="filterCategory('plats')" 
-                    id="tab-plats"
+                    onclick="filterCategory('plat')" 
+                    id="tab-plat"
                     class="category-tab px-8 py-3 rounded-full font-semibold text-lg transition-all bg-gradient-to-r from-yellow-500 to-amber-500 text-black"
                 >
                     Plats
                 </button>
                 <button 
-                    onclick="filterCategory('boissons')" 
-                    id="tab-boissons"
+                    onclick="filterCategory('boisson')" 
+                    id="tab-boisson"
                     class="category-tab px-8 py-3 rounded-full font-semibold text-lg transition-all bg-gradient-to-r from-yellow-500 to-amber-500 text-black"
                 >
                     Boissons
-                </button>
-                <button 
-                    onclick="filterCategory('desserts')" 
-                    id="tab-desserts"
-                    class="category-tab px-8 py-3 rounded-full font-semibold text-lg transition-all bg-gradient-to-r from-yellow-500 to-amber-500 text-black"
-                >
-                    Desserts
                 </button>
             </div>
 
@@ -210,8 +203,8 @@
                 if (category === 'all') {
                     plat.style.display = 'block';
                 } else {
-                    const platCategory = plat.getAttribute('category');
-                    if (platCategory === category) {
+                    const platCategory = (plat.getAttribute('data-category') || '').toLowerCase();
+                    if (platCategory === category.toLowerCase()) {
                         plat.style.display = 'block';
                     } else {
                         plat.style.display = 'none';

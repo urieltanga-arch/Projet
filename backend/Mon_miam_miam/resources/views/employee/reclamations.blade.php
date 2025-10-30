@@ -189,21 +189,8 @@
     </div>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white mt-12 py-6">
-        <div class="container mx-auto px-4 text-center">
-            <div class="mb-4">
-                <img src="/images/logo.png" alt="Logo" class="h-12 mx-auto mb-2">
-            </div>
-            <p>Order.cm ©Copyright 2025, All Rights Reserved.</p>
-            <div class="mt-2 space-x-4">
-                <a href="#" class="hover:text-amber-400 transition">Privacy Policy</a>
-                <a href="#" class="hover:text-amber-400 transition">Terms</a>
-                <a href="#" class="hover:text-amber-400 transition">Pricing</a>
-                <a href="#" class="hover:text-amber-400 transition">Do not share your personal information</a>
-            </div>
-        </div>
-    </footer>
-
+    <x-footer class="block h-12 w-auto fill-current text-yellow-500" />
+    
     <script>
         function changerStatutReclamation(reclamationId, nouveauStatut) {
             const messages = {
