@@ -60,33 +60,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
         $code = request('referral_code');
         
         $referrer = \App\Models\User::where('referral_code', $code)->first();
+    
         
         if (!$referrer) {
             return back()->with('error', 'Code invalide');
         }
         
-        if ($referrer->id === auth()->id()) {
         $user = request()->user();
         
         if ($referrer->id === $user->id) {
             return back()->with('error', 'Vous ne pouvez pas utiliser votre propre code');
         }
         
-        if (auth()->user()->referred_by) {
         if ($user->referred_by) {
             return back()->with('error', 'Vous avez déjà utilisé un code de parrainage');
         }
         
         \App\Models\Referral::create([
             'referrer_id' => $referrer->id,
-            'referred_id' => auth()->id(),
             'referred_id' => $user->id,
             'points_earned' => 10
         ]);
         
-        auth()->user()->update(['referred_by' => $referrer->id]);
-        $referrer->addPoints(10, 'Parrainage de ' . auth()->user()->name);
-        auth()->user()->addPoints(5, 'Bonus de bienvenue - parrainage');
         $user->update(['referred_by' => $referrer->id]);
         $referrer->addPoints(10, 'Parrainage de ' . $user->name);
         $user->addPoints(5, 'Bonus de bienvenue - parrainage');
