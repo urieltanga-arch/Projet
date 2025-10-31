@@ -410,7 +410,7 @@
                        class="px-4 py-2 text-base font-medium rounded-lg transition-colors {{ request()->routeIs('gerant.gerant.dashboard') ? 'bg-yellow-500 text-black' : 'text-white hover:bg-gray-800' }}">
                         Dashboard
                     </a>
-                    <a href="#"
+                    <a href="{{ route('gerant.employees.index') }}"
                        class="px-4 py-2 text-base font-medium rounded-lg transition-colors text-white hover:bg-gray-800">
                         Employé
                     </a>

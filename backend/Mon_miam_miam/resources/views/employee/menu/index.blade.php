@@ -1,4 +1,17 @@
-<x-admin-app-layout>
+ <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Dashboard Employé - Order.cm</title>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
+    <!-- Ajoutez la navbar ici -->
+    @include('layouts.employee-navigation')
+    <div class="container mx-auto px-4 py-8">
     <div class="py-12 bg-gradient-to-br from-amber-50 to-orange-50 min-h-screen">
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             
@@ -9,11 +22,7 @@
                     <p class="text-gray-600 mt-2">Gestion de la disponibilité et des prix</p>
                 </div>
                 
-                <!-- Bouton Ajouter -->
-                <a href="{{ route('employee.menu.create') }}" 
-                   class="bg-black hover:bg-gray-800 text-white font-bold px-6 py-3 rounded-full transition-colors shadow-lg">
-                    ➕ Ajouter un plat
-                </a>
+                
             </div>
 
             <!-- Messages de succès -->
@@ -75,11 +84,7 @@
                                               method="POST" 
                                               onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?')">
                                             @csrf
-                                            @method('DELETE')
-                                            <button type="submit" 
-                                                    class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors">
-                                                🗑️
-                                            </button>
+                                           
                                         </form>
                                     </div>
                                 </div>
@@ -149,11 +154,7 @@
                                                   method="POST" 
                                                   onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce plat ?')">
                                                 @csrf
-                                                @method('DELETE')
-                                                <button type="submit" 
-                                                        class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-lg transition-colors">
-                                                    🗑️
-                                                </button>
+                                               
                                             </form>
                                         </div>
                                     </div>
@@ -199,4 +200,5 @@
         }
     </script>
 
-</x-admin-app-layout>
+</body>
+</html>

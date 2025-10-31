@@ -19,6 +19,9 @@ use App\Http\Controllers\MiniJeuxController;
 use App\Http\Controllers\GerantController;
 use App\Http\Controllers\Gerant\GerantStatistiquesController;
 use App\Http\Controllers\Gerant\GerantReclamationsController;
+use App\Http\Controllers\Gerant\GerantEmployeeManagerController;
+
+
 // ============================================
 // ROUTES PUBLIQUES (sans authentification)
 // ============================================
@@ -304,15 +307,14 @@ Route::middleware(['auth', 'role:manager'])->prefix('gerant')->name('gerant.')->
      // Statistiques - CORRECTION ICI
         Route::get('/statistiques', [GerantStatistiquesController::class, 'index'])->name('statistiques');
 
+  
+        // Gestion des employés
+    Route::get('/employees', [App\Http\Controllers\Gerant\GerantEmployeeManagerController::class, 'index'])->name('employees.index');
+    Route::post('/employees', [App\Http\Controllers\Gerant\GerantEmployeeManagerController::class, 'store'])->name('employees.store');
+    Route::put('/employees/{id}', [App\Http\Controllers\Gerant\GerantEmployeeManagerController::class, 'update'])->name('employees.update');
+    Route::post('/employees/{id}/toggle-status', [App\Http\Controllers\Gerant\GerantEmployeeManagerController::class, 'toggleStatus'])->name('employees.toggleStatus');
+    Route::delete('/employees/{id}', [App\Http\Controllers\Gerant\GerantEmployeeManagerController::class, 'destroy'])->name('employees.destroy');
     
-    // Gestion des employés
-    Route::get('/employees', [GerantController::class, 'employees'])->name('employees.index');
-    Route::get('/employees/create', [GerantController::class, 'createEmployee'])->name('employees.create');
-    Route::post('/employees', [GerantController::class, 'storeEmployee'])->name('employees.store');
-    Route::get('/employees/{employee}/edit', [GerantController::class, 'editEmployee'])->name('employees.edit');
-    Route::put('/employees/{employee}', [GerantController::class, 'updateEmployee'])->name('employees.update');
-    Route::delete('/employees/{employee}', [GerantController::class, 'deleteEmployee'])->name('employees.delete');
-
     // Menu
     Route::get('/menu', [App\Http\Controllers\Employee\MenuController::class, 'index'])->name('menu.index');
     Route::post('/menu', [App\Http\Controllers\Employee\MenuController::class, 'store'])->name('menu.store');
