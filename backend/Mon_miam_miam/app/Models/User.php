@@ -91,6 +91,7 @@ public function hasAnyRole(array $roles)
 
      // Relation avec les points
     public function loyaltyPoints()
+    public function LoyaltyPoint()
     {
         return $this->hasMany(\App\Models\LoyaltyPoint::class);
     }

@@ -102,6 +102,7 @@
             <div class="flex items-center space-x-3">
                 <button 
                     onclick="commanderPlat({{ $plat->id }})"
+                    onclick="commanderPlat('{{ $plat->id }}')"
                     class="bg-gradient-to-r from-yellow-500 to-amber-500 hover:from-yellow-600 hover:to-amber-600 text-black px-6 py-2 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg"
                 >
                     Commander

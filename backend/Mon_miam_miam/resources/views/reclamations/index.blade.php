@@ -219,6 +219,7 @@
                         @endif
 
                         <button onclick="openDetailModal({{ $reclamation->id }})" class="px-6 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all font-bold text-sm shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                        <button onclick="openDetailModal('{{ $reclamation->id }}')" class="px-6 py-2.5 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all font-bold text-sm shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                             👁 Détails complets
                         </button>
                     </div>
@@ -244,6 +245,7 @@
 
 {{-- Modal détails --}}
 <div id="detailModal" class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 backdrop-blur-sm">
+<div id="detailModal" class="fixed inset-0 bg-black bg-opacity-60 items-center justify-center z-50 backdrop-blur-sm hidden">
     <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-3xl w-full mx-4 transform transition-all">
         <div class="flex justify-between items-center mb-6 pb-4 border-b-2 border-amber-200">
             <h2 class="text-2xl font-bold text-gray-800">📋 Détails de la réclamation</h2>

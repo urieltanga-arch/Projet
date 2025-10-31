@@ -20,6 +20,7 @@ use App\Http\Controllers\GerantController;
 use App\Http\Controllers\Gerant\GerantStatistiquesController;
 use App\Http\Controllers\Gerant\GerantReclamationsController;
 use App\Http\Controllers\Gerant\GerantEmployeeManagerController;
+use Illuminate\Support\Facades\Auth;
 
 
 // ============================================
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Points de fidélité
     Route::get('/mes-points', function() {
         $user = auth()->user();
+        $user = request()->user();
         $history = $user->loyaltyPoints()->latest()->paginate(10);
         $referrals = $user->referrals()->with('referred')->latest()->get();
         return view('loyalty.simple', compact('user', 'history', 'referrals'));
@@ -64,22 +66,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
         
         if ($referrer->id === auth()->id()) {
+        $user = request()->user();
+        
+        if ($referrer->id === $user->id) {
             return back()->with('error', 'Vous ne pouvez pas utiliser votre propre code');
         }
         
         if (auth()->user()->referred_by) {
+        if ($user->referred_by) {
             return back()->with('error', 'Vous avez déjà utilisé un code de parrainage');
         }
         
         \App\Models\Referral::create([
             'referrer_id' => $referrer->id,
             'referred_id' => auth()->id(),
+            'referred_id' => $user->id,
             'points_earned' => 10
         ]);
         
         auth()->user()->update(['referred_by' => $referrer->id]);
         $referrer->addPoints(10, 'Parrainage de ' . auth()->user()->name);
         auth()->user()->addPoints(5, 'Bonus de bienvenue - parrainage');
+        $user->update(['referred_by' => $referrer->id]);
+        $referrer->addPoints(10, 'Parrainage de ' . $user->name);
+        $user->addPoints(5, 'Bonus de bienvenue - parrainage');
         
         return back()->with('success', 'Code validé ! Vous avez gagné 5 points et votre parrain 10 points !');
     })->name('referral.validate');
@@ -138,6 +148,7 @@ Route::middleware(['auth', 'role:student'])->prefix('student')->name('student.')
     
     Route::get('/mes-points', function() {
         $user = auth()->user();
+        $user = request()->user();
         $history = $user->loyaltyPoints()->latest()->paginate(10);
         return view('loyalty.simple', compact('user', 'history'));
     })->name('loyalty.simple');

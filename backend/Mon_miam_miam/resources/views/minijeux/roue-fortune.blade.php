@@ -154,6 +154,7 @@
 
     <!-- Modal de résultat -->
     <div id="resultModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+    <div id="resultModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4" style="display: none;">
         <div class="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center transform scale-95 transition-transform">
             <div id="resultIcon" class="text-9xl mb-4"></div>
             <h2 id="resultTitle" class="text-4xl font-bold text-gray-900 mb-4"></h2>

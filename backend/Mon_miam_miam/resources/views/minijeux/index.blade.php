@@ -126,6 +126,7 @@
 
 <!-- Modal Roue de Fortune -->
 <div id="roueModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+<div id="roueModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4" style="display: none;">
     <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl shadow-2xl max-w-2xl w-full p-8 relative">
         <button onclick="closeRoueModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-4xl">×</button>
         
@@ -142,6 +143,7 @@
         </div>
         
         <button id="spinButton" onclick="spinRoue()" 
+        <button id="spinButton" onclick="spinRoue()"
                 class="w-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white px-8 py-4 rounded-2xl font-bold text-2xl hover:shadow-xl transition">
             TOURNER LA ROUE
         </button>
@@ -150,6 +152,7 @@
 
 <!-- Modal Quiz Cuisine -->
 <div id="quizModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex items-center justify-center p-4">
+<div id="quizModal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 items-center justify-center p-4">
     <div class="bg-white rounded-3xl shadow-2xl max-w-3xl w-full p-8 relative max-h-[90vh] overflow-y-auto">
         <button onclick="closeQuizModal()" class="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-4xl">×</button>
         
@@ -356,6 +359,7 @@ function showQuestion() {
             <div class="space-y-4">
                 ${question.options.map((option, index) => `
                     <button onclick="checkAnswer(${index})" 
+                    <button onclick="checkAnswer(${index})"
                             class="quiz-option w-full text-left px-6 py-4 rounded-xl border-2 border-gray-300 hover:border-amber-400 hover:bg-amber-50 transition font-semibold text-lg">
                         ${option}
                     </button>
@@ -471,4 +475,4 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 @endpush
-</x-app-layout>
+</x-app-layout></x-app-layout>

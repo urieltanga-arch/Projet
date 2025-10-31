@@ -89,6 +89,7 @@
                                 <!-- Bouton Commander -->
                                 <button 
                                     onclick="addToCart({{ $plat->id }})"
+                                    onclick="addToCart('{{ $plat->id }}')"
                                     class="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-gray-800 transition-colors"
                                 >
                                     Commander
